@@ -1,0 +1,245 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   FOCUSLY design tokens
+   Dark theme is the default. `.light` overrides the same variables,
+   so every utility built from these tokens flips automatically.
+------------------------------------------------------------------ */
+:root {
+  color-scheme: dark;
+
+  --page: #0a0e1a;
+  --surface: #111827;
+  --surface-2: #161f33;
+  --surface-3: #1c2740;
+  --line: #24304d;
+  --line-strong: #33415f;
+
+  --ink: #e8ecf7;
+  --ink-soft: #b4bcd0;
+  --ink-muted: #7f8aa3;
+
+  --primary: #7c5cff;
+  --primary-strong: #6a48ff;
+  --primary-soft: rgba(124, 92, 255, 0.16);
+  --secondary: #5b8cff;
+  --accent: #22d3ee;
+  --accent-soft: rgba(34, 211, 238, 0.14);
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+
+  --chart-1: #7c5cff;
+  --chart-2: #22d3ee;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #5b8cff;
+}
+
+.light {
+  color-scheme: light;
+
+  --page: #f4f6fc;
+  --surface: #ffffff;
+  --surface-2: #eef1f9;
+  --surface-3: #e5eaf5;
+  --line: #e2e7f3;
+  --line-strong: #cfd7e9;
+
+  --ink: #101828;
+  --ink-soft: #3d4860;
+  --ink-muted: #69748d;
+
+  --primary: #6d4aff;
+  --primary-strong: #5b36ff;
+  --primary-soft: rgba(109, 74, 255, 0.12);
+  --secondary: #3f74ff;
+  --accent: #0891b2;
+  --accent-soft: rgba(8, 145, 178, 0.12);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.12);
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.12);
+
+  --chart-1: #6d4aff;
+  --chart-2: #0891b2;
+  --chart-3: #059669;
+  --chart-4: #d97706;
+  --chart-5: #3f74ff;
+}
+
+@theme inline {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-card: 16px;
+  --radius-panel: 14px;
+
+  --shadow-card: 0 1px 2px rgba(6, 10, 22, 0.35), 0 8px 24px -16px rgba(6, 10, 22, 0.6);
+  --shadow-pop: 0 18px 48px -18px rgba(6, 10, 22, 0.55), 0 2px 8px rgba(6, 10, 22, 0.25);
+  --shadow-glow: 0 0 0 1px var(--primary-soft), 0 8px 30px -12px var(--primary);
+
+  --animate-fade-up: fade-up 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pop: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 1.8s ease-out infinite;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--primary-soft);
+  }
+  70% {
+    box-shadow: 0 0 0 14px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--page);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--primary-soft);
+    color: var(--ink);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-muted);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-family: inherit;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
