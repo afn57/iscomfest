@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { BellRing, ChevronRight, Crosshair, EyeOff, LayoutPanelTop, Moon, Sun } from 'lucide-react'
 import { useSettingsStore } from '../../store/useSettingsStore'
+import { useLockStore } from '../../store/useLockStore'
 import { toast } from '../../store/useToastStore'
 import { cn } from '../../utils/cn'
 import { Button, Field, Input, Panel, Toggle } from '../common'
@@ -93,6 +94,7 @@ export function FocusSettings() {
   const focus = useSettingsStore((s) => s.settings.focus)
   const restDay = useSettingsStore((s) => s.settings.restDay)
   const updateSection = useSettingsStore((s) => s.updateSection)
+  const extensionPresent = useLockStore((s) => s.extensionPresent)
 
   const minutesError =
     focus.defaultMinutes < 5 || focus.defaultMinutes > 120 ? 'Antara 5 dan 120 menit.' : undefined
@@ -102,7 +104,15 @@ export function FocusSettings() {
       : undefined
 
   return (
-    <Panel title="Preferensi fokus" description="Dipakai oleh Focus Mode dan simulasi Focus Lock." action={<Crosshair className="size-4 text-primary" />}>
+    <Panel
+      title="Preferensi fokus"
+      description={
+        extensionPresent
+          ? 'Dipakai oleh Focus Mode dan Focus Lock (terhubung ke extension).'
+          : 'Dipakai oleh Focus Mode dan simulasi Focus Lock.'
+      }
+      action={<Crosshair className="size-4 text-primary" />}
+    >
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Durasi sesi default" hint="menit" error={minutesError}>
           <Input
@@ -164,9 +174,15 @@ export function FocusSettings() {
         />
       </div>
 
-      <p className="mt-3 rounded-xl bg-warning-soft px-3.5 py-3 text-[12.5px] leading-relaxed text-warning">
-        Focus Lock bersifat simulasi UI — aplikasi tidak memiliki izin untuk menutup aplikasi lain
-        di perangkat kamu.
+      <p
+        className={cn(
+          'mt-3 rounded-xl px-3.5 py-3 text-[12.5px] leading-relaxed',
+          extensionPresent ? 'bg-success-soft text-success' : 'bg-warning-soft text-warning',
+        )}
+      >
+        {extensionPresent
+          ? 'Focus Lock memblokir website terpilih lewat FOCUSLY Extension selama sesi berjalan. Aplikasi desktop di luar browser tidak terpengaruh.'
+          : 'Tanpa FOCUSLY Extension, Focus Lock bersifat simulasi UI — aplikasi tidak memiliki izin untuk menutup aplikasi lain di perangkat kamu.'}
       </p>
     </Panel>
   )

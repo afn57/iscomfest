@@ -1,3 +1,34 @@
+# FOCUSLY
+
+Aplikasi manajemen tugas dengan Focus Mode, timer Pomodoro, dan Focus Lock.
+
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # tsc + vite build
+npm run lint     # oxlint
+```
+
+## Focus Lock (browser extension)
+
+Tanpa extension, Focus Lock hanya **simulasi UI** (state di dalam aplikasi). Untuk pemblokiran
+website yang nyata selama sesi fokus, pasang extension MV3 di folder `extension/`:
+
+1. Buka `chrome://extensions` (Chrome/Edge).
+2. Aktifkan **Developer mode** (toggle di pojok kanan atas).
+3. Klik **Load unpacked** → pilih folder `extension/` di proyek ini.
+4. Muat ulang tab FOCUSLY — badge berubah menjadi **Real lock: ON** saat sesi berjalan.
+
+Cara kerja: saat sesi fokus dimulai, web app mengirim daftar domain ke extension; extension
+memasang aturan `declarativeNetRequest` sehingga website terpilih di-block (navigasi diarahkan
+ke halaman blok berhitung mundur). Aturan dilepas otomatis saat sesi selesai — atau saat waktu
+sesi habis, meski tab FOCUSLY ditutup.
+
+Batasan: memblokir **website** di browser saja. Aplikasi desktop di luar browser tidak
+terpengaruh (butuh native application, tahap berikutnya).
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.

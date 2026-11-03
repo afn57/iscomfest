@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sesi fokus — FOCUSLY</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f6f7fb;
+        color: #1f2430;
+        font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      .card {
+        max-width: 26rem;
+        margin: 1.5rem;
+        padding: 2rem;
+        background: #fff;
+        border: 1px solid #e6e8ef;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(31, 36, 48, 0.06);
+        text-align: center;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: #eceaff;
+        color: #5b4be0;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 1rem 0 0.5rem;
+        font-size: 1.5rem;
+      }
+      p {
+        margin: 0.4rem 0;
+        color: #5d6472;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .timer {
+        margin: 1.25rem 0 0.25rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      .hosts {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        justify-content: center;
+      }
+      .host {
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: #f2f3f8;
+        color: #5d6472;
+        font-size: 12px;
+      }
+      a.button {
+        display: inline-block;
+        margin-top: 1.25rem;
+        padding: 0.6rem 1.1rem;
+        border-radius: 0.6rem;
+        background: #6c5ce7;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      a.button:hover {
+        background: #5b4be0;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <span class="badge">FOCUSLY · Focus Lock</span>
+      <h1>Sesi fokus sedang berjalan</h1>
+      <p id="message">Website ini diblokir selama sesi fokus kamu. Kembali bekerja — waktunya habis sebentar lagi.</p>
+      <div class="timer" id="countdown">--:--</div>
+      <div class="hosts" id="hosts"></div>
+      <a class="button hidden" id="back" href="http://localhost:5173/focus">Buka FOCUSLY</a>
+    </div>
+    <script src="blocked.js"></script>
+  </body>
+</html>

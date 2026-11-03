@@ -93,8 +93,9 @@ export function DashboardPage() {
             localStorage.
           </li>
           <li>
-            • FOCUSLY saat ini berjalan sebagai aplikasi frontend. Integrasi backend dan
-            browser extension untuk Focus Lock disiapkan pada tahap berikutnya.
+            • FOCUSLY berjalan sebagai aplikasi frontend. Focus Lock pemblokiran website nyata
+            aktif jika FOCUSLY Extension terpasang di browser; integrasi backend disiapkan pada
+            tahap berikutnya.
           </li>
         </ul>
       </Panel>

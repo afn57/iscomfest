@@ -3,7 +3,9 @@ import { Globe, Lock, Plus, Trash2, X } from 'lucide-react'
 import { Badge, Button, Input, Panel } from '../common'
 import { BrandIcon } from '../common/BrandIcon'
 import { selectAllApps, useFocusStore } from '../../store/useFocusStore'
+import { useLockStore } from '../../store/useLockStore'
 import { cn } from '../../utils/cn'
+import { normalizeHost } from '../../utils/host'
 import { toast } from '../../store/useToastStore'
 
 export function RestrictedApps() {
@@ -13,6 +15,7 @@ export function RestrictedApps() {
   const addCustomApp = useFocusStore((s) => s.addCustomApp)
   const removeCustomApp = useFocusStore((s) => s.removeCustomApp)
   const setApps = useFocusStore((s) => s.setApps)
+  const extensionPresent = useLockStore((s) => s.extensionPresent)
 
   const [name, setName] = useState('')
   const [host, setHost] = useState('')
@@ -20,7 +23,7 @@ export function RestrictedApps() {
   const apps = selectAllApps({ customApps })
 
   const submitCustom = () => {
-    const cleanHost = host.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+    const cleanHost = normalizeHost(host)
     if (name.trim().length < 2 || !cleanHost.includes('.')) {
       toast.error('Data belum lengkap', 'Isi nama dan domain yang valid, mis. chatgpt.com.')
       return
@@ -28,13 +31,17 @@ export function RestrictedApps() {
     addCustomApp(name.trim(), cleanHost)
     setName('')
     setHost('')
-    toast.success('Website ditambahkan', `${cleanHost} masuk daftar pembatasan (simulasi).`)
+    toast.success('Website ditambahkan', `${cleanHost} masuk daftar pembatasan.`)
   }
 
   return (
     <Panel
       title="Aplikasi & website yang dibatasi"
-      description="Pilih yang ingin dijauhi selama sesi fokus. Ini simulasi — pemblokiran nyata butuh extension atau aplikasi native."
+      description={
+        extensionPresent
+          ? 'Pilih yang ingin dijauhi selama sesi fokus. Selama sesi berjalan, website ini diblokir browser oleh FOCUSLY Extension.'
+          : 'Pilih yang ingin dijauhi selama sesi fokus. Tanpa extension ini masih simulasi — pasang FOCUSLY Extension untuk pemblokiran nyata.'
+      }
       action={
         selected.length > 0 ? (
           <button

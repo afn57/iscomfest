@@ -9,6 +9,7 @@ import { FocusHistory } from '../components/focus/FocusHistory'
 import { PomodoroTimer } from '../components/pomodoro/PomodoroTimer'
 import { PomodoroSettingsPanel } from '../components/pomodoro/PomodoroSettingsPanel'
 import { PomodoroHistory } from '../components/pomodoro/PomodoroHistory'
+import { useLockStore } from '../store/useLockStore'
 
 const TABS = [
   { id: 'session', label: 'Session', icon: <Crosshair /> },
@@ -19,6 +20,7 @@ const TABS = [
 
 export function FocusPage() {
   const [params, setParams] = useSearchParams()
+  const extensionPresent = useLockStore((s) => s.extensionPresent)
   const raw = params.get('tab')
   const tab = TABS.some((t) => t.id === raw) ? (raw as string) : 'session'
 
@@ -32,7 +34,11 @@ export function FocusPage() {
     <>
       <PageHeader
         title="Focus Mode"
-        description="Sesi fokus minim distraksi, timer Pomodoro, dan simulasi Focus Lock untuk menjaga konsistensi."
+        description={
+          extensionPresent
+            ? 'Sesi fokus minim distraksi, timer Pomodoro, dan Focus Lock yang memblokir website via extension untuk menjaga konsistensi.'
+            : 'Sesi fokus minim distraksi, timer Pomodoro, dan Focus Lock untuk menjaga konsistensi.'
+        }
         crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'Focus Mode' }]}
       />
 

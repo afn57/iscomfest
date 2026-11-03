@@ -5,6 +5,7 @@ import {
   Lock,
   Pause,
   Play,
+  Puzzle,
   ShieldCheck,
   ShieldAlert,
   Square,
@@ -14,6 +15,7 @@ import {
 import { Badge, Button, ConfirmDialog, Panel, Select } from '../common'
 import { RingProgress } from '../common/RingProgress'
 import { useFocusStore, selectAllApps } from '../../store/useFocusStore'
+import { useLockStore } from '../../store/useLockStore'
 import { useSettingsStore } from '../../store/useSettingsStore'
 import { useTaskStore } from '../../store/useTaskStore'
 import { finishFocusSession, startFocusSession } from '../../services/actions'
@@ -31,6 +33,8 @@ export function SessionPanel() {
   const dndDefault = useSettingsStore((s) => s.settings.focus.dndDefault)
   const defaultMinutes = useSettingsStore((s) => s.settings.focus.defaultMinutes)
   const showBanner = useSettingsStore((s) => s.settings.focus.showLockBanner)
+  const extensionPresent = useLockStore((s) => s.extensionPresent)
+  const lockEngaged = useLockStore((s) => s.lockEngaged)
   const tasks = useTaskStore((s) => s.tasks)
 
   const [minutes, setMinutes] = useState(defaultMinutes)
@@ -59,6 +63,9 @@ export function SessionPanel() {
   const remaining = Math.max(0, plannedMs - elapsed)
   const percent = plannedMs === 0 ? 0 : (elapsed / plannedMs) * 100
   const paused = Boolean(active?.pausedAt)
+  const hasRestriction = selectedAppIds.length > 0
+  const realLock = Boolean(active) && hasRestriction && extensionPresent && lockEngaged
+  const simulatedLock = Boolean(active) && hasRestriction && !realLock
 
   const start = () => {
     startFocusSession({
@@ -94,25 +101,37 @@ export function SessionPanel() {
         <Badge tone={active && dndActive ? 'accent' : 'neutral'}>
           <BellOff className="size-3" /> DND {active ? (dndActive ? 'On' : 'Off') : dnd ? 'On (siap)' : 'Off'}
         </Badge>
-        <Badge tone={selectedAppIds.length > 0 ? 'primary' : 'neutral'}>
+        <Badge tone={hasRestriction ? 'primary' : 'neutral'}>
           <Lock className="size-3" /> {selectedAppIds.length} aplikasi dibatasi
         </Badge>
-        <Badge tone={active && selectedAppIds.length > 0 ? 'warning' : 'neutral'}>
-          <ShieldAlert className="size-3" /> Simulated lock: {active && selectedAppIds.length > 0 ? 'ON' : 'OFF'}
+        <Badge tone={realLock ? 'success' : simulatedLock ? 'warning' : 'neutral'}>
+          {realLock ? <ShieldCheck className="size-3" /> : <ShieldAlert className="size-3" />}
+          {realLock ? 'Real lock: ON' : simulatedLock ? 'Simulated lock: ON' : 'Lock: OFF'}
         </Badge>
       </div>
 
-      {showBanner && (
-        <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning-soft/60 px-4 py-3">
-          <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warning" />
-          <p className="text-[12.5px] leading-relaxed text-warning/90">
-            <strong className="font-semibold text-warning">Simulasi UI.</strong> Focus Lock di
-            FOCUSLY hanya mengelola state dan tampilan di dalam aplikasi. Pemblokiran nyata
-            aplikasi/website lain membutuhkan browser extension atau native application — struktur
-            kode disiapkan agar bisa diintegrasikan pada tahap berikutnya.
-          </p>
-        </div>
-      )}
+      {showBanner &&
+        (extensionPresent ? (
+          <div className="flex items-start gap-3 rounded-xl border border-success/30 bg-success-soft/60 px-4 py-3">
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
+            <p className="text-[12.5px] leading-relaxed text-success/90">
+              <strong className="font-semibold text-success">Extension terhubung.</strong> Selama
+              sesi fokus berjalan, website di daftar pembatasan diblokir browser secara nyata oleh
+              FOCUSLY Extension. Aplikasi desktop di luar browser tidak ikut terblokir.
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning-soft/60 px-4 py-3">
+            <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warning" />
+            <p className="text-[12.5px] leading-relaxed text-warning/90">
+              <strong className="font-semibold text-warning">Simulasi UI.</strong> FOCUSLY
+              Extension belum terpasang — Focus Lock baru mengelola state di dalam aplikasi. Untuk
+              pemblokiran nyata, buka <code className="rounded bg-warning-soft px-1">chrome://extensions</code>,
+              aktifkan Developer mode, lalu <strong>Load unpacked</strong> pada folder{' '}
+              <code className="rounded bg-warning-soft px-1">extension/</code> di proyek ini.
+            </p>
+          </div>
+        ))}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Timer */}
@@ -267,7 +286,13 @@ export function SessionPanel() {
             </div>
           </Panel>
 
-          <LockStatusCard active={Boolean(active)} appCount={selectedAppIds.length} apps={apps.length} />
+          <LockStatusCard
+            active={Boolean(active)}
+            appCount={selectedAppIds.length}
+            apps={apps.length}
+            realLock={realLock}
+            extensionPresent={extensionPresent}
+          />
         </div>
       </div>
 
@@ -290,13 +315,25 @@ export function SessionPanel() {
   )
 }
 
-function LockStatusCard({ active, appCount, apps }: { active: boolean; appCount: number; apps: number }) {
-  const simulated = active && appCount > 0
+function LockStatusCard({
+  active,
+  appCount,
+  apps,
+  realLock,
+  extensionPresent,
+}: {
+  active: boolean
+  appCount: number
+  apps: number
+  realLock: boolean
+  extensionPresent: boolean
+}) {
+  const simulated = active && appCount > 0 && !realLock
   return (
     <Panel title="Lock status">
       <ul className="space-y-2.5 text-[12.5px]">
         <StatusRow
-          icon={active ? <Crosshair className="size-3.5" /> : <Crosshair className="size-3.5" />}
+          icon={<Crosshair className="size-3.5" />}
           label="Focus Mode"
           value={active ? 'Active' : 'Inactive'}
           tone={active ? 'success' : 'neutral'}
@@ -308,14 +345,22 @@ function LockStatusCard({ active, appCount, apps }: { active: boolean; appCount:
           tone={appCount > 0 ? 'primary' : 'neutral'}
         />
         <StatusRow
-          icon={simulated ? <ShieldCheck className="size-3.5" /> : <ShieldAlert className="size-3.5" />}
-          label="Simulated lock"
-          value={simulated ? 'ON (simulasi)' : 'OFF'}
-          tone={simulated ? 'warning' : 'neutral'}
+          icon={<Puzzle className="size-3.5" />}
+          label="Browser extension"
+          value={extensionPresent ? 'Terhubung' : 'Belum terpasang'}
+          tone={extensionPresent ? 'primary' : 'neutral'}
+        />
+        <StatusRow
+          icon={realLock || simulated ? <ShieldCheck className="size-3.5" /> : <ShieldAlert className="size-3.5" />}
+          label="Focus Lock"
+          value={realLock ? 'ON (extension)' : simulated ? 'ON (simulasi)' : 'OFF'}
+          tone={realLock ? 'success' : simulated ? 'warning' : 'neutral'}
         />
       </ul>
       <p className="mt-3 rounded-lg bg-surface-2 px-3 py-2.5 text-[11.5px] leading-relaxed text-ink-muted">
-        Status di atas adalah indikator state aplikasi, bukan bukti pemblokiran sistem operasi.
+        {extensionPresent
+          ? 'Pemblokiran diterapkan oleh browser extension untuk website terpilih — aplikasi desktop di luar browser tidak terpengaruh.'
+          : 'Status di atas adalah indikator state aplikasi, bukan bukti pemblokiran — pasang FOCUSLY Extension untuk blokir nyata.'}
       </p>
     </Panel>
   )
