@@ -1,0 +1,16 @@
+import { useEffect, useState } from 'react';
+/** Tracks a viewport breakpoint without needing a CSS-only media query. */
+export function useMediaQuery(query) {
+    const [matches, setMatches] = useState(() => typeof window !== 'undefined' ? window.matchMedia(query).matches : false);
+    useEffect(() => {
+        const mql = window.matchMedia(query);
+        const onChange = (e) => setMatches(e.matches);
+        setMatches(mql.matches);
+        mql.addEventListener('change', onChange);
+        return () => mql.removeEventListener('change', onChange);
+    }, [query]);
+    return matches;
+}
+export function useIsDesktop() {
+    return useMediaQuery('(min-width: 1024px)');
+}
