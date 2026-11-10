@@ -2,7 +2,6 @@ import { XP_REWARDS } from '../data/mock/gamification';
 import { useCalendarStore } from '../store/useCalendarStore';
 import { useFocusStore } from '../store/useFocusStore';
 import { useNotificationStore } from '../store/useNotificationStore';
-import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { useTaskStore } from '../store/useTaskStore';
 import { toast } from '../store/useToastStore';
@@ -75,39 +74,6 @@ export function finishFocusSession(status) {
         href: '/focus',
     });
     return session;
-}
-/* ------------------------------------------------------------------ */
-/*  Pomodoro                                                           */
-/* ------------------------------------------------------------------ */
-export function completePomodoroPhase(phase, minutes, taskId) {
-    const cycleIndex = usePomodoroStore.getState().records.filter((r) => r.phase === 'focus').length + 1;
-    usePomodoroStore.getState().record({
-        phase,
-        minutes,
-        completedAt: new Date().toISOString(),
-        taskId,
-        cycleIndex: ((cycleIndex - 1) % 4) + 1,
-        finishedNaturally: true,
-    });
-    if (phase !== 'focus')
-        return;
-    awardXp(XP_REWARDS.pomodoroSession);
-    bumpGoal('pomodoro_sessions', 1);
-    bumpGoal('focus_minutes', minutes);
-    recordProductiveDay();
-    useProgressStore.getState().pushLog({
-        type: 'pomodoro',
-        message: `Menyelesaikan sesi Pomodoro ${minutes} menit`,
-        xp: XP_REWARDS.pomodoroSession,
-    });
-    useNotificationStore.getState().push({
-        kind: 'focus',
-        title: 'Sesi Pomodoro selesai',
-        body: `${minutes} menit fokus. Saatnya istirahat.`,
-        href: '/focus',
-        dedupe: `pomodoro:${Date.now()}`,
-    });
-    toast.success(`Pomodoro ${minutes} menit selesai`, `+${XP_REWARDS.pomodoroSession} XP · lanjutkan atau istirahat.`);
 }
 /* ------------------------------------------------------------------ */
 /*  Rest day                                                           */

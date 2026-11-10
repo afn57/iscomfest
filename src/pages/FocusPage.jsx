@@ -1,17 +1,13 @@
 import { useSearchParams } from 'react-router-dom';
-import { CalendarClock, Crosshair, History, Timer } from 'lucide-react';
+import { CalendarClock, Crosshair, History } from 'lucide-react';
 import { PageHeader, Tabs } from '../components/common';
 import { SessionPanel } from '../components/focus/SessionPanel';
 import { RestrictedApps } from '../components/focus/RestrictedApps';
 import { AutoLockCard } from '../components/focus/AutoLockCard';
 import { SchedulePanel } from '../components/focus/SchedulePanel';
 import { FocusHistory } from '../components/focus/FocusHistory';
-import { PomodoroTimer } from '../components/pomodoro/PomodoroTimer';
-import { PomodoroSettingsPanel } from '../components/pomodoro/PomodoroSettingsPanel';
-import { PomodoroHistory } from '../components/pomodoro/PomodoroHistory';
 const TABS = [
     { id: 'session', label: 'Session', icon: <Crosshair /> },
-    { id: 'pomodoro', label: 'Pomodoro', icon: <Timer /> },
     { id: 'schedule', label: 'Schedule', icon: <CalendarClock /> },
     { id: 'history', label: 'History', icon: <History /> },
 ];
@@ -25,7 +21,7 @@ export function FocusPage() {
         setParams(next, { replace: true });
     };
     return (<>
-      <PageHeader title="Focus Mode" description="Sesi fokus minim distraksi, timer Pomodoro, dan simulasi Focus Lock untuk menjaga konsistensi." crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'Focus Mode' }]}/>
+      <PageHeader title="Focus Mode" description="Sesi fokus minim distraksi dan simulasi Focus Lock untuk menjaga konsistensi." crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'Focus Mode' }]}/>
 
       <div className="mb-4 overflow-x-auto no-scrollbar sm:mb-5">
         <Tabs items={TABS} value={tab} onChange={setTab}/>
@@ -37,12 +33,6 @@ export function FocusPage() {
             <RestrictedApps />
             <AutoLockCard />
           </div>
-        </div>)}
-
-      {tab === 'pomodoro' && (<div className="space-y-4 sm:space-y-5">
-          <PomodoroTimer />
-          <PomodoroSettingsPanel />
-          <PomodoroHistory />
         </div>)}
 
       {tab === 'schedule' && (<div className="space-y-4 sm:space-y-5">

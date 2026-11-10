@@ -14,7 +14,6 @@ export const SEARCHABLE_ROUTES = [
     { to: '/dashboard', label: 'Dashboard', icon: 'LayoutDashboard', description: 'Ringkasan aktivitas produktivitas' },
     { to: '/tasks', label: 'My Tasks', icon: 'ListChecks', description: 'Kelola tugas, folder, prioritas, deadline' },
     { to: '/focus', label: 'Focus Mode', icon: 'Crosshair', description: 'Sesi fokus, Focus Lock, riwayat' },
-    { to: '/focus', label: 'Pomodoro Timer', icon: 'Timer', description: 'Timer 25/5/15 dengan siklus panjang' },
     { to: '/calendar', label: 'Calendar', icon: 'CalendarDays', description: 'Tampilan bulan, minggu, dan hari' },
     { to: '/reminders', label: 'Reminders', icon: 'AlarmClock', description: 'Pengingat deadline, fokus, dan streak' },
     { to: '/streak', label: 'Streak', icon: 'Flame', description: 'Streak, heatmap, dan Rest Day' },

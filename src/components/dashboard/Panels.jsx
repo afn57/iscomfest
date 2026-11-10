@@ -90,7 +90,6 @@ const LOG_ICONS = {
     goal: { icon: Target, tone: 'bg-accent-soft text-accent' },
     level: { icon: Zap, tone: 'bg-primary-soft text-primary' },
     rest: { icon: Coffee, tone: 'bg-accent-soft text-accent' },
-    pomodoro: { icon: Target, tone: 'bg-success-soft text-success' },
 };
 export function ActivityFeed() {
     const log = useProgressStore((s) => s.progress.log).slice(0, 7);

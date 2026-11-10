@@ -1,33 +1,15 @@
 import { useEffect } from 'react';
-import { usePomodoroRuntimeStore } from '../store/usePomodoroRuntimeStore';
 import { useFocusStore } from '../store/useFocusStore';
 import { finishFocusSession } from '../services/actions';
 import { toast } from '../store/useToastStore';
-const TICK_MS = 250;
 /**
  * Global tickers mounted once in the app layout.
  *
- * The Pomodoro countdown and the running Focus session are driven by wall
- * clock timestamps, so they stay accurate even when the tab is backgrounded.
+ * The running Focus session is driven by a wall clock timestamp, so it stays
+ * accurate even when the tab is backgrounded.
  */
 export function useAppTickers() {
-    usePomodoroTicker();
     useFocusTicker();
-}
-function usePomodoroTicker() {
-    useEffect(() => {
-        const id = window.setInterval(() => {
-            const state = usePomodoroRuntimeStore.getState();
-            if (!state.running || state.endsAt === null)
-                return;
-            const remaining = state.endsAt - Date.now();
-            if (remaining <= 0)
-                state.handleComplete();
-            else
-                usePomodoroRuntimeStore.setState({ remainingMs: remaining });
-        }, TICK_MS);
-        return () => window.clearInterval(id);
-    }, []);
 }
 function useFocusTicker() {
     useEffect(() => {
