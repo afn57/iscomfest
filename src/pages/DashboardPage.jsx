@@ -1,8 +1,7 @@
 import { GreetingHeader } from '../components/dashboard/GreetingHeader';
-import { ProductivityChart, StatusDonut, TodayProgress } from '../components/dashboard/Charts';
+import { ProductivityChart, TodayProgress } from '../components/dashboard/Charts';
 import { TodayTaskList, UpcomingDeadlines } from '../components/dashboard/TaskPanels';
-import { ActivityFeed, DailyGoalsWidget, QuickStats, StreakStrip, } from '../components/dashboard/Panels';
-import { FocusSummary } from '../components/dashboard/FocusSummary';
+import { ActivityFeed, DailyGoalsWidget } from '../components/dashboard/Panels';
 import { CardSkeleton, Panel, Skeleton } from '../components/common';
 import { useSimulatedLoading } from '../hooks/useSimulatedLoading';
 function DashboardSkeleton() {
@@ -19,12 +18,6 @@ function DashboardSkeleton() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
-        <CardSkeleton />
       </div>
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
         <div className="space-y-4 sm:space-y-5 lg:col-span-2">
@@ -44,19 +37,15 @@ export function DashboardPage() {
         return <DashboardSkeleton />;
     return (<div className="space-y-4 sm:space-y-5">
       <GreetingHeader />
-      <QuickStats />
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
         <div className="min-w-0 space-y-4 sm:space-y-5 lg:col-span-2 lg:flex lg:flex-col lg:[&>*]:grow">
           <TodayTaskList />
           <ProductivityChart />
-          <FocusSummary />
         </div>
         <div className="min-w-0 space-y-4 sm:space-y-5 lg:flex lg:flex-col lg:[&>*]:grow">
           <TodayProgress />
           <DailyGoalsWidget />
-          <StreakStrip />
-          <StatusDonut />
         </div>
       </div>
 

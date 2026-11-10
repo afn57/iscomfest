@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BellOff, Crosshair, Lock, Pause, Play, ShieldCheck, ShieldAlert, Square, Timer, Unlock, } from 'lucide-react';
-import { Badge, Button, ConfirmDialog, Panel, Select } from '../common';
+import { Crosshair, Pause, Play, ShieldCheck, ShieldAlert, Square, Timer, Unlock, } from 'lucide-react';
+import { Button, ConfirmDialog, Panel, Select } from '../common';
 import { RingProgress } from '../common/RingProgress';
 import { useFocusStore, selectAllApps } from '../../store/useFocusStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
@@ -27,7 +27,6 @@ export function SessionPanel() {
     const [ending, setEnding] = useState(false);
     const [custom, setCustom] = useState(String(defaultMinutes));
     const now = useNow(active ? 250 : 0);
-    const dndActive = active ? active.dnd : dnd;
     const realBlocking = guardConnected && Boolean(active) && selectedAppIds.length > 0;
     useEffect(() => {
         if (!active)
@@ -62,25 +61,6 @@ export function SessionPanel() {
         }
     };
     return (<div className="space-y-4 sm:space-y-5">
-      {/* Status strip */}
-      <div className="flex flex-wrap items-center gap-2">
-        <Badge tone={active ? 'success' : 'neutral'} dot>
-          {active ? 'Focus Mode Active' : 'Focus Mode Inactive'}
-        </Badge>
-        <Badge tone={active && dndActive ? 'accent' : 'neutral'}>
-          <BellOff className="size-3"/> DND {active ? (dndActive ? 'On' : 'Off') : dnd ? 'On (siap)' : 'Off'}
-        </Badge>
-        <Badge tone={selectedAppIds.length > 0 ? 'primary' : 'neutral'}>
-          <Lock className="size-3"/> {selectedAppIds.length} aplikasi dibatasi
-        </Badge>
-        <Badge tone={active && selectedAppIds.length > 0 ? 'warning' : 'neutral'}>
-          <ShieldAlert className="size-3"/> Simulated lock: {active && selectedAppIds.length > 0 ? 'ON' : 'OFF'}
-        </Badge>
-        <Badge tone={guardConnected ? 'success' : 'neutral'} dot>
-          <Lock className="size-3"/> FocusGuard {guardConnected ? 'terhubung' : 'tidak terdeteksi'}
-        </Badge>
-      </div>
-
       {showBanner && (<div className={cn('flex items-start gap-3 rounded-xl border px-4 py-3', realBlocking
                 ? 'border-success/35 bg-success-soft/60'
                 : 'border-warning/30 bg-warning-soft/60')}>

@@ -1,8 +1,7 @@
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import { productivitySeries, statusDistribution, todayTasks, focusStats } from '../../services/selectors';
+import { productivitySeries, todayTasks, focusStats } from '../../services/selectors';
 import { Panel, ProgressBar } from '../common';
-import { taskCompletionStats } from '../../services/selectors';
 import { useTaskStore } from '../../store/useTaskStore';
 const AXIS_TICK = { fill: 'var(--ink-muted)', fontSize: 11 };
 const GRID_STROKE = 'var(--line)';
@@ -48,41 +47,6 @@ export function ProductivityChart() {
           Tugas selesai
         </span>
       </div>
-    </Panel>);
-}
-const DONUT_COLORS = ['var(--chart-5)', 'var(--chart-2)', 'var(--chart-3)'];
-export function StatusDonut() {
-    const reduceMotion = useSettingsStore((s) => s.settings.reduceMotion);
-    const tasks = useTaskStore((s) => s.tasks);
-    const stats = taskCompletionStats(tasks);
-    const data = statusDistribution().filter((d) => d.value > 0);
-    return (<Panel title="Task status" description={`${stats.completed} dari ${stats.total} tugas selesai.`}>
-      <div className="relative h-44 w-full">
-        {stats.total === 0 ? (<div className="flex h-full items-center justify-center text-[13px] text-ink-muted">
-            Belum ada tugas.
-          </div>) : (<ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" innerRadius="66%" outerRadius="92%" paddingAngle={3} stroke="none" isAnimationActive={!reduceMotion}>
-                {data.map((entry, i) => (<Cell key={entry.key} fill={DONUT_COLORS[i % DONUT_COLORS.length]}/>))}
-              </Pie>
-              <Tooltip content={<ChartTooltip />}/>
-            </PieChart>
-          </ResponsiveContainer>)}
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-semibold text-ink font-display tabular-nums">
-            {stats.percent}%
-          </span>
-          <span className="text-[11px] text-ink-muted">selesai</span>
-        </div>
-      </div>
-
-      <ul className="mt-3 space-y-2 border-t border-line pt-3">
-        {data.map((entry, i) => (<li key={entry.key} className="flex items-center gap-2 text-[12.5px]">
-            <span className="size-2.5 rounded-full" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }}/>
-            <span className="text-ink-muted">{entry.name}</span>
-            <span className="ml-auto font-medium tabular-nums text-ink-soft">{entry.value}</span>
-          </li>))}
-      </ul>
     </Panel>);
 }
 export function TodayProgress() {

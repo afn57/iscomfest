@@ -1,13 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Crosshair, Flame, ListChecks, Target, Trophy, Zap, Coffee } from 'lucide-react';
+import { ArrowRight, Crosshair, ListChecks, Target, Zap, Coffee } from 'lucide-react';
 import { Panel } from '../common';
-import { goalSummary, focusStats } from '../../services/selectors';
+import { goalSummary } from '../../services/selectors';
 import { useProgressStore } from '../../store/useProgressStore';
-import { useSettingsStore } from '../../store/useSettingsStore';
-import { streakWeek } from '../../services/selectors';
 import { cn } from '../../utils/cn';
 import { formatShort } from '../../utils/date';
-import { StatCard } from '../common';
 export function DailyGoalsWidget() {
     const { items, metCount, total } = goalSummary();
     const navigate = useNavigate();
@@ -31,65 +28,13 @@ export function DailyGoalsWidget() {
       </ul>
     </Panel>);
 }
-export function StreakStrip() {
-    const week = streakWeek();
-    const current = useProgressStore((s) => s.progress.currentStreak);
-    const longest = useProgressStore((s) => s.progress.longestStreak);
-    const navigate = useNavigate();
-    return (<Panel title="Streak mingguan" description="Hijau = hari aktif. Abu-abu = belum ada aktivitas." action={<button type="button" onClick={() => navigate('/streak')} className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline">
-          Detail <ArrowRight className="size-3"/>
-        </button>}>
-      <div className="grid grid-cols-7 gap-1.5">
-        {week.map((day) => (<div key={day.key} className="flex flex-col items-center gap-1.5">
-            <span className="text-[10.5px] font-medium uppercase text-ink-muted">
-              {day.date.toLocaleDateString('id-ID', { weekday: 'narrow' })}
-            </span>
-            <span className={cn('flex size-8 items-center justify-center rounded-lg border text-[11px] font-semibold tabular-nums transition-colors', day.active
-                ? 'border-success/40 bg-success-soft text-success'
-                : day.rest
-                    ? 'border-accent/40 bg-accent-soft text-accent'
-                    : 'border-line bg-surface-2 text-ink-muted', day.isToday && 'ring-2 ring-primary/50')}>
-              {day.date.getDate()}
-            </span>
-          </div>))}
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-line pt-3">
-        <div className="rounded-xl bg-surface-2 px-3 py-2.5">
-          <div className="flex items-center gap-1.5 text-[11px] text-ink-muted">
-            <Flame className="size-3.5 text-warning"/> Current
-          </div>
-          <div className="mt-1 text-lg font-semibold tabular-nums text-ink font-display">
-            {current} hari
-          </div>
-        </div>
-        <div className="rounded-xl bg-surface-2 px-3 py-2.5">
-          <div className="flex items-center gap-1.5 text-[11px] text-ink-muted">
-            <Trophy className="size-3.5 text-primary"/> Terpanjang
-          </div>
-          <div className="mt-1 text-lg font-semibold tabular-nums text-ink font-display">
-            {longest} hari
-          </div>
-        </div>
-      </div>
-    </Panel>);
-}
-export function QuickStats() {
-    const progress = useProgressStore((s) => s.progress);
-    const stats = focusStats();
-    const restDays = useSettingsStore((s) => s.settings.restDay);
-    return (<div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
-      <StatCard label="Current streak" value={`${progress.currentStreak}d`} sub={`Terpanjang ${progress.longestStreak} hari`} tone="warning" icon={<Flame />}/>
-      <StatCard label="Total XP" value={progress.xp.toLocaleString('id-ID')} sub={`Rest day aktif: ${restDays.weeklyEnabled ? 'mingguan' : 'nonaktif'}`} tone="primary" icon={<Zap />}/>
-      <StatCard className="col-span-2 sm:col-span-1" label="Focus sessions" value={stats.sessions} sub={`${stats.totalMinutes} menit kumulatif`} tone="accent" icon={<Crosshair />}/>
-    </div>);
-}
 const LOG_ICONS = {
     focus: { icon: Crosshair, tone: 'bg-primary-soft text-primary' },
     task: { icon: ListChecks, tone: 'bg-success-soft text-success' },
     goal: { icon: Target, tone: 'bg-accent-soft text-accent' },
     level: { icon: Zap, tone: 'bg-primary-soft text-primary' },
     rest: { icon: Coffee, tone: 'bg-accent-soft text-accent' },
+    pomodoro: { icon: Target, tone: 'bg-success-soft text-success' },
 };
 export function ActivityFeed() {
     const log = useProgressStore((s) => s.progress.log).slice(0, 7);

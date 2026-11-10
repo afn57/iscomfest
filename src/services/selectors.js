@@ -2,6 +2,7 @@ import { addDays, isSameDay, isToday, parseISO } from 'date-fns';
 import { DAILY_GOALS } from '../data/mock/gamification';
 import { useCalendarStore } from '../store/useCalendarStore';
 import { useFocusStore } from '../store/useFocusStore';
+import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { useTaskStore } from '../store/useTaskStore';
 import { dayKey, deadlineUrgency, lastNDays, todayKey } from '../utils/date';
@@ -57,15 +58,27 @@ export function focusMinutesOn(date) {
         .sessions.filter((s) => isSameDay(parseISO(s.endedAt), date))
         .reduce((sum, s) => sum + s.actualMinutes, 0);
 }
+export function pomodoroFocusToday() {
+    const today = todayKey();
+    return usePomodoroStore
+        .getState()
+        .records.filter((r) => r.phase === 'focus' && dayKey(r.completedAt) === today)
+        .reduce((sum, r) => sum + r.minutes, 0);
+}
 export function productivitySeries(days = 7) {
     const tasks = useTaskStore.getState().tasks;
     return lastNDays(days).map((date) => {
         const focusMinutes = focusMinutesOn(date);
+        const pomodoroMinutes = usePomodoroStore
+            .getState()
+            .records.filter((r) => r.phase === 'focus' && isSameDay(parseISO(r.completedAt), date))
+            .reduce((sum, r) => sum + r.minutes, 0);
         const tasksDone = tasks.filter((t) => t.completedAt && isSameDay(parseISO(t.completedAt), date)).length;
         return {
             date,
             label: date.toLocaleDateString('id-ID', { weekday: 'short' }),
             focusMinutes,
+            pomodoroMinutes,
             tasksDone,
         };
     });

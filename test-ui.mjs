@@ -116,10 +116,10 @@ try {
 
   await poll(() => evalJs(appSession, 'document.readyState === "complete" && Boolean(document.getElementById("root"))'), 15000)
 
-  /* ---------- 1. badge handshake ---------- */
+  /* ---------- 1. banner handshake ---------- */
   const badge = await poll(() => evalJs(appSession,
-    `(document.body.innerText.match(/FocusGuard (terhubung|tidak terdeteksi)/) || [])[1] || null`), 15000, 500)
-  check('badge FocusGuard = terhubung (handshake website<->ekstensi)', badge === 'terhubung', `badge=${badge}`)
+    `(document.body.innerText.match(/Ekstensi (terhubung|belum terdeteksi)/) || [])[1] || null`), 15000, 500)
+  check('banner FocusGuard = terhubung (handshake website<->ekstensi)', badge === 'terhubung', `banner=${badge}`)
 
   /* ---------- 2. tandai website custom lewat UI ---------- */
   const added = await evalJs(appSession, `(() => {
@@ -221,7 +221,7 @@ try {
   /* ---------- diagnosis bila ada kegagalan ---------- */
   if (failures > 0) {
     const diag = await evalJs(appSession, `JSON.stringify({
-      badge: (document.body.innerText.match(/FocusGuard (terhubung|tidak terdeteksi)/) || [])[1],
+      banner: (document.body.innerText.match(/Ekstensi (terhubung|belum terdeteksi)/) || [])[1],
       hasSession: Boolean([...document.querySelectorAll('button')].find(b => b.textContent.includes('End Session')))
     })`)
     console.log('  diag aplikasi:', diag)

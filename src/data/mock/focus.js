@@ -69,4 +69,31 @@ export function createSeedFocusSessions() {
         };
     });
 }
+export function createSeedPomodoro() {
+    const specs = [
+        { hoursAgo: 3, phase: 'focus', minutes: 25, cycle: 1, taskId: 'task_02' },
+        { hoursAgo: 2.5, phase: 'short_break', minutes: 5, cycle: 1 },
+        { hoursAgo: 2.3, phase: 'focus', minutes: 25, cycle: 2, taskId: 'task_02' },
+        { hoursAgo: 1.9, phase: 'short_break', minutes: 5, cycle: 2 },
+        { hoursAgo: 1.7, phase: 'focus', minutes: 25, cycle: 3, taskId: 'task_01' },
+        { hoursAgo: 1.3, phase: 'short_break', minutes: 5, cycle: 3 },
+        { hoursAgo: 1.1, phase: 'focus', minutes: 25, cycle: 4, taskId: 'task_01' },
+        { hoursAgo: 0.7, phase: 'long_break', minutes: 15, cycle: 4 },
+        { hoursAgo: 6, phase: 'focus', minutes: 25, cycle: 1, taskId: 'task_07' },
+        { hoursAgo: 5.6, phase: 'short_break', minutes: 5, cycle: 1 },
+        { hoursAgo: 5.4, phase: 'focus', minutes: 25, cycle: 2, taskId: 'task_07' },
+        { hoursAgo: 30, phase: 'focus', minutes: 25, cycle: 1, taskId: 'task_09' },
+        { hoursAgo: 29.5, phase: 'short_break', minutes: 5, cycle: 1 },
+        { hoursAgo: 29.3, phase: 'focus', minutes: 25, cycle: 2, taskId: 'task_09' },
+    ];
+    return specs.map((s) => ({
+        id: uid('pom'),
+        phase: s.phase,
+        minutes: s.minutes,
+        completedAt: hoursAgoIso(s.hoursAgo),
+        taskId: s.taskId,
+        cycleIndex: s.cycle,
+        finishedNaturally: true,
+    }));
+}
 export const SEED_RELATED_TASK_ID = SEED_TASKS[1].id;

@@ -4,6 +4,7 @@ import { uid } from '../../utils/id';
 export const DAILY_GOALS = [
     { id: 'focus_minutes', label: 'Focus time', target: 120, unit: 'minutes' },
     { id: 'tasks_done', label: 'Tugas selesai', target: 3, unit: 'tasks' },
+    { id: 'pomodoro_sessions', label: 'Sesi Pomodoro', target: 4, unit: 'sessions' },
     { id: 'focus_sessions', label: 'Sesi fokus', target: 3, unit: 'sessions' },
 ];
 /* ------------------------------------------------------------------ */
@@ -36,6 +37,7 @@ export const XP_REWARDS = {
     focusSession: 25,
     focusSessionEarlyEnd: 10,
     taskCompleted: 40,
+    pomodoroSession: 15,
     dailyGoalBonus: 60,
     levelUp: 100,
 };
@@ -60,20 +62,20 @@ function goalProgressSeed() {
         if (back === 0) {
             out.push({
                 date: key,
-                values: { focus_minutes: 85, tasks_done: 1, focus_sessions: 2 },
+                values: { focus_minutes: 85, tasks_done: 1, pomodoro_sessions: 2, focus_sessions: 2 },
             });
         }
         else if (back === 3) {
             // A lighter day — shows the goals are not fake-perfect
             out.push({
                 date: key,
-                values: { focus_minutes: 40, tasks_done: 1, focus_sessions: 1 },
+                values: { focus_minutes: 40, tasks_done: 1, pomodoro_sessions: 1, focus_sessions: 1 },
             });
         }
         else {
             out.push({
                 date: key,
-                values: { focus_minutes: 150, tasks_done: 3, focus_sessions: 4 },
+                values: { focus_minutes: 150, tasks_done: 3, pomodoro_sessions: 5, focus_sessions: 4 },
             });
         }
     }
@@ -103,6 +105,13 @@ function logSeed() {
             message: 'Mencapai target focus time harian',
             xp: XP_REWARDS.dailyGoalBonus,
             at: at(7),
+        },
+        {
+            id: uid('log'),
+            type: 'pomodoro',
+            message: 'Menyelesaikan 4 sesi Pomodoro berturut-turut',
+            xp: XP_REWARDS.pomodoroSession * 2,
+            at: at(9),
         },
         {
             id: uid('log'),
