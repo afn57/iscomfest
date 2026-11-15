@@ -12,7 +12,8 @@
     {
       "matches": [
         "http://127.0.0.1:*/*",
-        "http://localhost:*/*"
+        "http://localhost:*/*",
+        "https://iscomfest.vercel.app/*"
       ],
       "js": ["content.js"],
       "run_at": "document_start"
