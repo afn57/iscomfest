@@ -1,0 +1,37 @@
+import { Crosshair, Flame, ListChecks } from 'lucide-react';
+import { taskCompletionStats } from '../../services/selectors';
+import { useProgressStore } from '../../store/useProgressStore';
+import { useTaskStore } from '../../store/useTaskStore';
+import { useFocusStore } from '../../store/useFocusStore';
+import { cn } from '../../utils/cn';
+const ITEMS = [
+    { key: 'focus', label: 'Menit fokus', icon: Crosshair, tone: 'bg-accent-soft text-accent' },
+    { key: 'tasks', label: 'Tugas selesai', icon: ListChecks, tone: 'bg-success-soft text-success' },
+    { key: 'streak', label: 'Streak', icon: Flame, tone: 'bg-warning-soft text-warning' },
+];
+export function ProfileStats() {
+    const streak = useProgressStore((s) => s.progress.currentStreak);
+    const tasks = useTaskStore((s) => s.tasks);
+    const sessions = useFocusStore((s) => s.sessions);
+    const stats = {
+        focus: sessions.reduce((sum, s) => sum + s.actualMinutes, 0).toLocaleString('id-ID'),
+        tasks: String(taskCompletionStats(tasks).completed),
+        streak: `${streak} hr`,
+    };
+    return (<div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (<div key={item.key} className="rounded-card border border-line bg-surface px-3.5 py-3 shadow-card">
+            <div className="flex items-center gap-2">
+              <span className={cn('flex size-7 items-center justify-center rounded-lg', item.tone)}>
+                <Icon className="size-3.5"/>
+              </span>
+              <span className="truncate text-[12px] text-ink-muted">{item.label}</span>
+            </div>
+            <p className="mt-2 font-display text-xl font-bold tabular-nums text-ink">
+              {stats[item.key]}
+            </p>
+          </div>);
+        })}
+    </div>);
+}
