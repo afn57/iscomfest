@@ -1,13 +1,13 @@
 /* FocusGuard content script — dua peran:
-   1. Jembatan di halaman website utama (localhost): window.postMessage <-> chrome.runtime
+   1. Jembatan di halaman website utama (localhost & vercel): window.postMessage <-> chrome.runtime
    2. Overlay pemblokir di situs yang dibatasi                               */
 
 ;(() => {
   if (window.__focusGuardLoaded) return
   window.__focusGuardLoaded = true
 
-  const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1'])
-  const isBridgePage = LOCAL_HOSTS.has(location.hostname)
+  const BRIDGE_HOSTS = new Set(['localhost', '127.0.0.1', 'iscomfest.vercel.app'])
+  const isBridgePage = BRIDGE_HOSTS.has(location.hostname)
 
   const OVERLAY_HTML = `
     <div class="fg-card" style="background:rgba(15,18,30,.92);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:32px 36px;max-width:420px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.55);">

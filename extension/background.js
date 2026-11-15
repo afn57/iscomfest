@@ -97,7 +97,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === 'START' || message.type === 'STOP') {
     const origin = sender.url || ''
-    if (!/^https?:\/\/(localhost|127\.0\.0\.1)([/:?#]|$)/.test(origin)) {
+    const isAllowedOrigin =
+      /^https?:\/\/(localhost|127\.0\.0\.1)([/:?#]|$)/.test(origin) ||
+      /^https:\/\/iscomfest\.vercel\.app([/:?#]|$)/.test(origin)
+
+    if (!isAllowedOrigin) {
       sendResponse({ ok: false })
       return false
     }
