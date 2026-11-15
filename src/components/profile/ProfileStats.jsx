@@ -1,27 +1,24 @@
-import { Crosshair, Flame, ListChecks, Zap } from 'lucide-react';
+import { Crosshair, Flame, ListChecks } from 'lucide-react';
 import { taskCompletionStats } from '../../services/selectors';
 import { useProgressStore } from '../../store/useProgressStore';
 import { useTaskStore } from '../../store/useTaskStore';
 import { useFocusStore } from '../../store/useFocusStore';
 import { cn } from '../../utils/cn';
 const ITEMS = [
-    { key: 'xp', label: 'Total XP', icon: Zap, tone: 'bg-primary-soft text-primary' },
     { key: 'focus', label: 'Menit fokus', icon: Crosshair, tone: 'bg-accent-soft text-accent' },
     { key: 'tasks', label: 'Tugas selesai', icon: ListChecks, tone: 'bg-success-soft text-success' },
     { key: 'streak', label: 'Streak', icon: Flame, tone: 'bg-warning-soft text-warning' },
 ];
 export function ProfileStats() {
-    const xp = useProgressStore((s) => s.progress.xp);
     const streak = useProgressStore((s) => s.progress.currentStreak);
     const tasks = useTaskStore((s) => s.tasks);
     const sessions = useFocusStore((s) => s.sessions);
     const stats = {
-        xp: xp.toLocaleString('id-ID'),
         focus: sessions.reduce((sum, s) => sum + s.actualMinutes, 0).toLocaleString('id-ID'),
         tasks: String(taskCompletionStats(tasks).completed),
         streak: `${streak} hr`,
     };
-    return (<div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    return (<div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
       {ITEMS.map((item) => {
             const Icon = item.icon;
             return (<div key={item.key} className="rounded-card border border-line bg-surface px-3.5 py-3 shadow-card">

@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, ChevronDown, LogOut, Menu, Moon, Search, Settings, Sun, User, } from 'lucide-react';
+import { Bell, ChevronDown, Flame, LogOut, Menu, Moon, Search, Settings, Sun, User, } from 'lucide-react';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { useProfileStore } from '../../store/useProfileStore';
 import { useNotificationStore } from '../../store/useNotificationStore';
+import { useTaskStore } from '../../store/useTaskStore';
+import { atRiskOf } from '../../services/selectors';
 import { Avatar, Button, Tooltip } from '../common';
 import { PAGE_TITLES } from './navItems';
 import { NotificationPanel } from './NotificationPanel';
@@ -16,12 +18,15 @@ export function Topbar({ onOpenMobileNav }) {
     const profile = useProfileStore((s) => s.profile);
     const notifications = useNotificationStore((s) => s.notifications);
     const unread = notifications.filter((n) => !n.read).length;
+    const tasks = useTaskStore((s) => s.tasks);
+    const atRisk = useMemo(() => atRiskOf(tasks).length, [tasks]);
+    const total = unread + atRisk;
     const [notifOpen, setNotifOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef(null);
     const segment = `/${location.pathname.split('/')[1] ?? ''}`;
-    const title = PAGE_TITLES[segment] ?? 'FOCUSLY';
+    const title = PAGE_TITLES[segment] ?? 'FlowState';
     useEffect(() => {
         const onKey = (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -46,7 +51,7 @@ export function Topbar({ onOpenMobileNav }) {
     }, [location.pathname]);
     const crumbs = useMemo(() => {
         const parts = location.pathname.split('/').filter(Boolean);
-        const list = [{ label: 'FOCUSLY', to: '/dashboard' }];
+        const list = [{ label: 'FlowState', to: '/dashboard' }];
         let acc = '';
         for (const part of parts) {
             acc += `/${part}`;
@@ -94,10 +99,10 @@ export function Topbar({ onOpenMobileNav }) {
           {/* Notifications */}
           <div className="relative">
             <Tooltip content="Notifikasi">
-              <button type="button" onClick={() => setNotifOpen((v) => !v)} aria-label={`Notifikasi${unread ? `, ${unread} belum dibaca` : ''}`} className="relative rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink">
-                <Bell className="size-5"/>
-                {unread > 0 && (<span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-4 text-white">
-                    {unread > 9 ? '9+' : unread}
+            <button type="button" onClick={() => setNotifOpen((v) => !v)} aria-label={`Notifikasi${total ? `, ${total} perlu perhatian` : ''}`} className="relative rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink">
+              <Bell className="size-5"/>
+              {total > 0 && (<span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-4 text-white">
+                  {total > 9 ? '9+' : total}
                   </span>)}
               </button>
             </Tooltip>
@@ -118,11 +123,11 @@ export function Topbar({ onOpenMobileNav }) {
                   <MenuItem icon={<User className="size-4"/>} onClick={() => navigate('/profile')}>
                     Profile
                   </MenuItem>
+                  <MenuItem icon={<Flame className="size-4"/>} onClick={() => navigate('/profile?view=streak')}>
+                    My Streak
+                  </MenuItem>
                   <MenuItem icon={<Settings className="size-4"/>} onClick={() => navigate('/settings')}>
                     Settings
-                  </MenuItem>
-                  <MenuItem icon={theme === 'dark' ? <Sun className="size-4"/> : <Moon className="size-4"/>} onClick={toggleTheme}>
-                    {theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
                   </MenuItem>
                   <div className="my-1 border-t border-line"/>
                   <MenuItem icon={<LogOut className="size-4"/>} onClick={() => {

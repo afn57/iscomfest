@@ -1,27 +1,23 @@
 import { useEffect } from 'react';
-import { CheckCircle2, Info, Trophy, X, XCircle, Zap } from 'lucide-react';
+import { CheckCircle2, Info, X, XCircle } from 'lucide-react';
 import { useToastStore } from '../../store/useToastStore';
 import { cn } from '../../utils/cn';
 const KIND_STYLE = {
     success: { ring: 'border-success/40', icon: CheckCircle2 },
     error: { ring: 'border-danger/40', icon: XCircle },
     info: { ring: 'border-line-strong', icon: Info },
-    xp: { ring: 'border-primary/50', icon: Zap },
-    level: { ring: 'border-warning/50', icon: Trophy },
 };
 const ICON_COLOR = {
     success: 'text-success',
     error: 'text-danger',
     info: 'text-ink-muted',
-    xp: 'text-primary',
-    level: 'text-warning',
 };
 function ToastItem({ toast }) {
     const dismiss = useToastStore((s) => s.dismiss);
     const style = KIND_STYLE[toast.kind];
     const Icon = style.icon;
     useEffect(() => {
-        const ms = toast.kind === 'level' ? 6000 : 4200;
+        const ms = 4200;
         const id = window.setTimeout(() => dismiss(toast.id), ms);
         return () => window.clearTimeout(id);
     }, [toast.id, toast.kind, dismiss]);
@@ -32,12 +28,6 @@ function ToastItem({ toast }) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <p className="text-[13px] font-semibold text-ink leading-snug">{toast.title}</p>
-          {toast.xp !== undefined && (<span className="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold text-primary animate-pop">
-              +{toast.xp} XP
-            </span>)}
-          {toast.level !== undefined && (<span className="shrink-0 rounded-full bg-warning-soft px-2 py-0.5 text-[11px] font-bold text-warning animate-pop">
-              LEVEL {toast.level}
-            </span>)}
         </div>
         {toast.description && (<p className="mt-0.5 text-[12.5px] text-ink-muted leading-snug">{toast.description}</p>)}
       </div>

@@ -47,6 +47,17 @@ export const STATUS_META = {
     },
 };
 export const PRIORITY_ORDER = ['urgent', 'high', 'medium', 'low'];
+export const STATUS_ORDER = ['todo', 'in_progress', 'completed'];
+export const FOLDER_COLORS = [
+    '#7c5cff',
+    '#22d3ee',
+    '#34d399',
+    '#fbbf24',
+    '#f87171',
+    '#5b8cff',
+    '#f472b6',
+    '#a3e635',
+];
 /**
  * Minimum priority derived from how close a deadline is.
  * Overdue/today (critical) -> urgent, within 3 days (soon) -> high.
@@ -62,8 +73,8 @@ export function deadlinePriority(task) {
 }
 /**
  * Effective priority for display/sort/filter: the higher of the manual
- * priority and the deadline-derived one. Escalates only, never lowers,
- * and never mutates the stored task.
+ * priority and the deadline-derived one. Escalates only, never lowers.
+ * The stored task itself is raised by `escalateDeadlines()` in services/actions.
  */
 export function effectivePriority(task) {
     const floor = deadlinePriority(task);
@@ -73,17 +84,6 @@ export function effectivePriority(task) {
         ? task.priority
         : floor;
 }
-export const STATUS_ORDER = ['todo', 'in_progress', 'completed'];
-export const FOLDER_COLORS = [
-    '#7c5cff',
-    '#22d3ee',
-    '#34d399',
-    '#fbbf24',
-    '#f87171',
-    '#5b8cff',
-    '#f472b6',
-    '#a3e635',
-];
 /** Sort by: overdue first, then deadline asc, then priority weight desc. */
 export function compareTasks(a, b) {
     const aDone = a.status === 'completed' ? 1 : 0;

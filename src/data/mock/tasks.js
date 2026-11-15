@@ -171,11 +171,6 @@ export const SEED_TASKS = [
         createdAt: daysAgoIso(6, 9),
         updatedAt: daysAgoIso(2, 21),
         completedAt: daysAgoIso(2, 21),
-        verification: {
-            method: 'note',
-            note: 'Ringkasan selesai, sudah ditempel di catatan digital.',
-            verifiedAt: daysAgoIso(2, 21),
-        },
     },
     {
         id: 'task_12',
@@ -190,10 +185,6 @@ export const SEED_TASKS = [
         createdAt: daysAgoIso(7, 12),
         updatedAt: daysAgoIso(4, 20),
         completedAt: daysAgoIso(4, 20),
-        verification: {
-            method: 'self',
-            verifiedAt: daysAgoIso(4, 20),
-        },
     },
     {
         id: 'task_13',
@@ -208,12 +199,6 @@ export const SEED_TASKS = [
         createdAt: daysAgoIso(10, 18),
         updatedAt: daysAgoIso(6, 19),
         completedAt: daysAgoIso(6, 19),
-        verification: {
-            method: 'evidence',
-            evidenceName: 'bukti-folder-cloud.png',
-            evidenceSize: 284_199,
-            verifiedAt: daysAgoIso(6, 19),
-        },
     },
     {
         id: 'task_14',

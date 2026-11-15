@@ -2,11 +2,10 @@ import { addDays, isSameDay, isToday, parseISO } from 'date-fns';
 import { DAILY_GOALS } from '../data/mock/gamification';
 import { useCalendarStore } from '../store/useCalendarStore';
 import { useFocusStore } from '../store/useFocusStore';
-import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { useTaskStore } from '../store/useTaskStore';
 import { dayKey, deadlineUrgency, lastNDays, todayKey } from '../utils/date';
-import { compareTasks } from '../utils/priority';
+import { compareTasks, effectivePriority, PRIORITY_ORDER } from '../utils/priority';
 /* --------------------------- Tasks ------------------------------- */
 export function todayTasks() {
     return useTaskStore
@@ -29,6 +28,15 @@ export function upcomingDeadlines(limit = 5) {
 }
 export function overdueTasks() {
     return openTasks().filter((t) => deadlineUrgency(t.deadline, t.status) === 'overdue');
+}
+/** Tugas yang belum selesai dan deadline-nya sudah dekat: lewat, hari ini/besok, atau <=3 hari.
+ * Diurutkan dari tingkat urgensi tertinggi (urgent -> high -> medium -> low), lalu deadline terdekat. */
+export function atRiskOf(tasks) {
+    return tasks
+        .filter((t) => t.status !== 'completed' &&
+        ['overdue', 'critical', 'soon'].includes(deadlineUrgency(t.deadline, t.status)))
+        .sort((a, b) => PRIORITY_ORDER.indexOf(effectivePriority(a)) - PRIORITY_ORDER.indexOf(effectivePriority(b)) ||
+        a.deadline.localeCompare(b.deadline));
 }
 export function taskCompletionStats(tasks = useTaskStore.getState().tasks) {
     const total = tasks.length;
@@ -58,27 +66,15 @@ export function focusMinutesOn(date) {
         .sessions.filter((s) => isSameDay(parseISO(s.endedAt), date))
         .reduce((sum, s) => sum + s.actualMinutes, 0);
 }
-export function pomodoroFocusToday() {
-    const today = todayKey();
-    return usePomodoroStore
-        .getState()
-        .records.filter((r) => r.phase === 'focus' && dayKey(r.completedAt) === today)
-        .reduce((sum, r) => sum + r.minutes, 0);
-}
 export function productivitySeries(days = 7) {
     const tasks = useTaskStore.getState().tasks;
     return lastNDays(days).map((date) => {
         const focusMinutes = focusMinutesOn(date);
-        const pomodoroMinutes = usePomodoroStore
-            .getState()
-            .records.filter((r) => r.phase === 'focus' && isSameDay(parseISO(r.completedAt), date))
-            .reduce((sum, r) => sum + r.minutes, 0);
         const tasksDone = tasks.filter((t) => t.completedAt && isSameDay(parseISO(t.completedAt), date)).length;
         return {
             date,
             label: date.toLocaleDateString('id-ID', { weekday: 'short' }),
             focusMinutes,
-            pomodoroMinutes,
             tasksDone,
         };
     });

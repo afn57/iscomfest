@@ -7,12 +7,14 @@ import { useTaskStore } from '../../store/useTaskStore';
 import { effectivePriority, PRIORITY_META } from '../../utils/priority';
 import { deadlineLabel } from '../../utils/date';
 import { cn } from '../../utils/cn';
-import { CompletionDialog } from '../tasks/CompletionDialog';
+import { completeTask } from '../../services/actions';
 export function TodayTaskList() {
     const tasks = todayTasks();
     const navigate = useNavigate();
-    const [pending, setPending] = useState(null);
-    return (<Panel title="Tugas hari ini" description="Tandai selesai untuk mendapatkan XP dan menjaga streak." className="min-w-0" action={<Button variant="ghost" size="sm" iconRight={<ArrowUpRight className="size-3.5"/>} onClick={() => navigate('/tasks')}>
+    const [expanded, setExpanded] = useState(false);
+    const visible = expanded ? tasks : tasks.slice(0, 5);
+    const hidden = tasks.length - 5;
+    return (<Panel title="Tugas hari ini" description="Tandai selesai untuk memperbarui progres dan menjaga streak." className="min-w-0" action={<Button variant="ghost" size="sm" iconRight={<ArrowUpRight className="size-3.5"/>} onClick={() => navigate('/tasks')}>
           Semua tugas
         </Button>} padding="none">
       {tasks.length === 0 ? (<div className="px-5 pb-5">
@@ -20,11 +22,11 @@ export function TodayTaskList() {
                 Buat tugas
               </Button>}/>
         </div>) : (<ul className="divide-y divide-line px-1.5 pb-2">
-          {tasks.map((task) => {
+          {visible.map((task) => {
                 const meta = PRIORITY_META[effectivePriority(task)];
                 const done = task.status === 'completed';
                 return (<li key={task.id} className="group flex items-start gap-3 px-3.5 py-3">
-                <button type="button" aria-label={done ? 'Buka kembali tugas' : 'Tandai selesai'} onClick={() => (done ? navigate('/tasks') : setPending(task))} className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border transition-all', done
+                <button type="button" aria-label={done ? 'Buka kembali tugas' : 'Tandai selesai'} onClick={() => (done ? navigate('/tasks') : completeTask(task))} className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border transition-all', done
                         ? 'border-success bg-success text-white'
                         : 'border-line-strong bg-surface-2 hover:border-primary hover:bg-primary-soft')}>
                   {done && <Check className="size-3.5" strokeWidth={3}/>}
@@ -50,9 +52,12 @@ export function TodayTaskList() {
                 </button>
               </li>);
             })}
+          {tasks.length > 5 && (<li>
+              <button type="button" onClick={() => setExpanded((v) => !v)} className="w-full px-3.5 py-2.5 text-left text-[12.5px] font-semibold text-primary transition-colors hover:bg-surface-2">
+                {expanded ? 'Tampilkan lebih sedikit' : `Lihat selengkapnya (${hidden} lainnya)`}
+              </button>
+            </li>)}
         </ul>)}
-
-      <CompletionDialog task={pending} open={pending !== null} onClose={() => setPending(null)}/>
     </Panel>);
 }
 export function UpcomingDeadlines() {

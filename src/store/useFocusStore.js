@@ -98,7 +98,7 @@ export const useFocusStore = create()(persist((set, get) => ({
         customApps: [],
         dndEnabled: true,
     }),
-}), { name: 'focusly_focus', version: 1 }));
+}), { name: 'flowstate_focus', version: 1 }));
 export const selectAllApps = (s) => [
     ...RESTRICTED_APPS,
     ...s.customApps,

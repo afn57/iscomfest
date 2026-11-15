@@ -13,7 +13,15 @@ export const useTaskStore = create()(persist((set) => ({
         return task;
     },
     update: (id, patch) => set((s) => ({
-        tasks: s.tasks.map((t) => t.id === id ? { ...t, ...patch, updatedAt: new Date().toISOString() } : t),
+        tasks: s.tasks.map((t) => {
+            if (t.id !== id)
+                return t;
+            const next = { ...t, ...patch, updatedAt: new Date().toISOString() };
+            if (patch.status && patch.status !== 'completed' && t.status === 'completed') {
+                next.completedAt = undefined;
+            }
+            return next;
+        }),
     })),
     remove: (id) => set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) })),
     setStatus: (id, status) => set((s) => ({
@@ -26,14 +34,13 @@ export const useTaskStore = create()(persist((set) => ({
             }
             : t),
     })),
-    complete: (id, verification) => set((s) => ({
+    complete: (id) => set((s) => ({
         tasks: s.tasks.map((t) => t.id === id
             ? {
                 ...t,
                 status: 'completed',
                 completedAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-                verification,
             }
             : t),
     })),
@@ -43,7 +50,6 @@ export const useTaskStore = create()(persist((set) => ({
                 ...t,
                 status: 'todo',
                 completedAt: undefined,
-                verification: undefined,
                 updatedAt: new Date().toISOString(),
             }
             : t),
@@ -53,6 +59,9 @@ export const useTaskStore = create()(persist((set) => ({
         set((s) => ({ folders: [...s.folders, folder] }));
         return folder;
     },
+    renameFolder: (id, name) => set((s) => ({
+        folders: s.folders.map((f) => (f.id === id ? { ...f, name } : f)),
+    })),
     removeFolder: (id) => {
         if (id === 'others')
             return;
@@ -62,4 +71,4 @@ export const useTaskStore = create()(persist((set) => ({
         }));
     },
     reset: () => set({ tasks: SEED_TASKS, folders: DEFAULT_FOLDERS }),
-}), { name: 'focusly_tasks', version: 1 }));
+}), { name: 'flowstate_tasks', version: 1 }));

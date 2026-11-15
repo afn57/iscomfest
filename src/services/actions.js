@@ -1,26 +1,22 @@
-import { XP_REWARDS } from '../data/mock/gamification';
 import { useCalendarStore } from '../store/useCalendarStore';
 import { useFocusStore } from '../store/useFocusStore';
 import { useNotificationStore } from '../store/useNotificationStore';
-import { usePomodoroStore } from '../store/usePomodoroStore';
 import { useProgressStore } from '../store/useProgressStore';
 import { useTaskStore } from '../store/useTaskStore';
 import { toast } from '../store/useToastStore';
 import { deadlineUrgency } from '../utils/date';
-import { awardXp, bumpGoal, recordProductiveDay, } from './gamification';
+import { deadlinePriority, PRIORITY_ORDER } from '../utils/priority';
+import { bumpGoal, recordProductiveDay } from './gamification';
 /* ------------------------------------------------------------------ */
 /*  Tasks                                                              */
 /* ------------------------------------------------------------------ */
-export function completeTaskWithVerification(task, input) {
-    const verification = { ...input, verifiedAt: new Date().toISOString() };
-    useTaskStore.getState().complete(task.id, verification);
-    awardXp(XP_REWARDS.taskCompleted);
+export function completeTask(task) {
+    useTaskStore.getState().complete(task.id);
     recordProductiveDay();
     bumpGoal('tasks_done', 1);
     useProgressStore.getState().pushLog({
         type: 'task',
         message: `Menyelesaikan "${task.title}"`,
-        xp: XP_REWARDS.taskCompleted,
     });
     useNotificationStore.getState().push({
         kind: 'system',
@@ -32,7 +28,26 @@ export function completeTaskWithVerification(task, input) {
     const bonus = urgency === 'overdue'
         ? 'Tugas ini sudah terlambat — bagus sudah diselesaikan.'
         : 'Kerja bagus, satu tugas lebih ringan.';
-    toast.success('Tugas diselesaikan', `+${XP_REWARDS.taskCompleted} XP · ${bonus}`);
+    toast.success('Tugas diselesaikan', bonus);
+}
+/**
+ * Menaikkan prioritas tersimpan begitu deadline mendekat:
+ * lewat/hari ini -> urgent, <=3 hari -> high. Hanya naik, tidak pernah turun,
+ * dan tidak mengirim notifikasi/log agar ActivityFeed tidak berisik.
+ */
+export function escalateDeadlines() {
+    const { tasks, update } = useTaskStore.getState();
+    let changed = 0;
+    for (const task of tasks) {
+        if (task.status === 'completed')
+            continue;
+        const floor = deadlinePriority(task);
+        if (floor && PRIORITY_ORDER.indexOf(floor) < PRIORITY_ORDER.indexOf(task.priority)) {
+            update(task.id, { priority: floor });
+            changed++;
+        }
+    }
+    return changed;
 }
 export function startFocusSession(input) {
     useFocusStore.getState().start(input);
@@ -48,9 +63,7 @@ export function finishFocusSession(status) {
     if (!session)
         return null;
     const completed = session.status === 'completed';
-    const dndBonus = session.dnd ? 0 : -5;
     if (completed) {
-        awardXp(XP_REWARDS.focusSession);
         bumpGoal('focus_minutes', session.actualMinutes);
         bumpGoal('focus_sessions', 1);
         if (session.dnd)
@@ -58,14 +71,12 @@ export function finishFocusSession(status) {
         useProgressStore.getState().pushLog({
             type: 'focus',
             message: `Menyelesaikan sesi fokus ${session.actualMinutes} menit${session.dnd ? ' dengan Do Not Disturb aktif' : ''}`,
-            xp: XP_REWARDS.focusSession,
         });
         toast.success(`Sesi fokus ${session.actualMinutes} menit selesai`, session.dnd
-            ? `+${XP_REWARDS.focusSession} XP · DND aktif, streak hari ini aman.`
-            : `+${XP_REWARDS.focusSession} XP · DND nonaktif (streak butuh DND atau daily goal).`);
+            ? 'DND aktif, streak hari ini aman.'
+            : 'DND nonaktif. Streak memerlukan DND atau daily goal.');
     }
     else {
-        awardXp(Math.max(5, XP_REWARDS.focusSessionEarlyEnd + dndBonus));
         toast.info('Sesi diakhiri lebih awal', `${session.actualMinutes} menit tercatat. Mulai lagi kapan saja.`);
     }
     useNotificationStore.getState().push({
@@ -75,39 +86,6 @@ export function finishFocusSession(status) {
         href: '/focus',
     });
     return session;
-}
-/* ------------------------------------------------------------------ */
-/*  Pomodoro                                                           */
-/* ------------------------------------------------------------------ */
-export function completePomodoroPhase(phase, minutes, taskId) {
-    const cycleIndex = usePomodoroStore.getState().records.filter((r) => r.phase === 'focus').length + 1;
-    usePomodoroStore.getState().record({
-        phase,
-        minutes,
-        completedAt: new Date().toISOString(),
-        taskId,
-        cycleIndex: ((cycleIndex - 1) % 4) + 1,
-        finishedNaturally: true,
-    });
-    if (phase !== 'focus')
-        return;
-    awardXp(XP_REWARDS.pomodoroSession);
-    bumpGoal('pomodoro_sessions', 1);
-    bumpGoal('focus_minutes', minutes);
-    recordProductiveDay();
-    useProgressStore.getState().pushLog({
-        type: 'pomodoro',
-        message: `Menyelesaikan sesi Pomodoro ${minutes} menit`,
-        xp: XP_REWARDS.pomodoroSession,
-    });
-    useNotificationStore.getState().push({
-        kind: 'focus',
-        title: 'Sesi Pomodoro selesai',
-        body: `${minutes} menit fokus. Saatnya istirahat.`,
-        href: '/focus',
-        dedupe: `pomodoro:${Date.now()}`,
-    });
-    toast.success(`Pomodoro ${minutes} menit selesai`, `+${XP_REWARDS.pomodoroSession} XP · lanjutkan atau istirahat.`);
 }
 /* ------------------------------------------------------------------ */
 /*  Rest day                                                           */

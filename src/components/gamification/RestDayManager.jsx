@@ -134,7 +134,7 @@ export function RestDayManager() {
         <Toggle checked={restSettings.protectStreak} onChange={(v) => updateSection('restDay', { protectStreak: v })} label="Proteksi streak" description="Rest Day dijadwalkan menjadi jembatan antar hari aktif."/>
 
         <p className="mt-4 rounded-xl bg-surface-2 px-3.5 py-3 text-[12.5px] leading-relaxed text-ink-muted">
-          Rest Day tidak memberi XP, tidak menaikkan streak, dan tidak dihitung sebagai hari aktif —
+          Rest Day tidak menaikkan streak, dan tidak dihitung sebagai hari aktif —
           ia hanya mencegah streak ter-reset.
         </p>
       </Panel>

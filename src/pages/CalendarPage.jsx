@@ -84,7 +84,7 @@ export function CalendarPage() {
                 year: 'numeric',
             });
     return (<>
-      <PageHeader title="Calendar" description="Lihat deadline, sesi fokus, dan Rest Day dalam satu tampilan mingguan hingga bulanan." crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'Calendar' }]} actions={<button type="button" onClick={() => openCreate(selected)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white shadow-[0_6px_20px_-10px_var(--primary)] transition-colors hover:bg-primary-strong">
+      <PageHeader title="Calendar" description="Lihat deadline, sesi fokus, dan Rest Day dalam satu tampilan mingguan hingga bulanan." crumbs={[{ label: 'FlowState', to: '/dashboard' }, { label: 'Calendar' }]} actions={<button type="button" onClick={() => openCreate(selected)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-medium text-white shadow-[0_6px_20px_-10px_var(--primary)] transition-colors hover:bg-primary-strong">
             <CalendarPlus />
             Jadwal baru
           </button>}/>

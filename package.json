@@ -1,19 +1,18 @@
 {
-  "name": "task-management",
+  "name": "flowstate",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "oxlint",
+    "lint": "oxlint --ignore-pattern \"iscomfest-*/**\" --ignore-pattern \"dist/**\" --ignore-pattern \"test-*.mjs\"",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.66.0",
-    "no": "^0.0.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",

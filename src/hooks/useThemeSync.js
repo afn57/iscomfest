@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSettingsStore } from '../store/useSettingsStore';
 /**
  * Applies the selected theme to the document root and keeps the browser
- * chrome colour in sync. Dark is the default theme of FOCUSLY.
+ * chrome colour in sync. Dark is the default theme of FlowState.
  */
 export function useThemeSync() {
     const theme = useSettingsStore((s) => s.settings.theme);

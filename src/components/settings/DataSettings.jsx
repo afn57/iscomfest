@@ -2,7 +2,8 @@ import { useRef, useState } from 'react';
 import { Database, Download, RotateCcw, Upload } from 'lucide-react';
 import { ConfirmDialog, Panel } from '../common';
 import { toast } from '../../store/useToastStore';
-const STORAGE_PREFIX = 'focusly_';
+const STORAGE_PREFIX = 'flowstate_';
+const LEGACY_PREFIX = 'focusly_';
 function storageKeys() {
     const keys = [];
     for (let i = 0; i < window.localStorage.length; i++) {
@@ -33,7 +34,7 @@ export function DataSettings() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `focusly-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        a.download = `flowstate-backup-${new Date().toISOString().slice(0, 10)}.json`;
         a.click();
         URL.revokeObjectURL(url);
         toast.success('Backup diunduh', `${storageKeys().length} bagian data disimpan ke file JSON.`);
@@ -44,21 +45,24 @@ export function DataSettings() {
             try {
                 const parsed = JSON.parse(String(reader.result));
                 let applied = 0;
-                for (const [key, value] of Object.entries(parsed)) {
+                for (const [rawKey, value] of Object.entries(parsed)) {
+                    const key = rawKey.startsWith(LEGACY_PREFIX)
+                        ? STORAGE_PREFIX + rawKey.slice(LEGACY_PREFIX.length)
+                        : rawKey;
                     if (!key.startsWith(STORAGE_PREFIX))
                         continue;
                     window.localStorage.setItem(key, JSON.stringify(value));
                     applied++;
                 }
                 if (applied === 0) {
-                    toast.error('Tidak ada data valid', 'File tidak berisi cadangan FOCUSLY.');
+                    toast.error('Tidak ada data valid', 'File tidak berisi cadangan FlowState.');
                     return;
                 }
                 toast.success('Backup dipulihkan', `${applied} bagian data dimuat. Muat ulang...`);
                 window.setTimeout(() => window.location.reload(), 700);
             }
             catch {
-                toast.error('File tidak valid', 'Pastikan file JSON berasal dari ekspor FOCUSLY.');
+                toast.error('File tidak valid', 'Pastikan file JSON berasal dari ekspor FlowState.');
             }
         };
         reader.readAsText(file);
@@ -121,6 +125,6 @@ export function DataSettings() {
         </p>
       </Panel>
 
-      <ConfirmDialog open={confirmReset} onClose={() => setConfirmReset(false)} onConfirm={resetAll} title="Reset seluruh data FOCUSLY?" tone="danger" confirmLabel="Reset sekarang" body="Streak, XP, tugas, dan pengaturan akan dihapus permanen di perangkat ini. Sebaiknya ekspor cadangan terlebih dahulu."/>
+      <ConfirmDialog open={confirmReset} onClose={() => setConfirmReset(false)} onConfirm={resetAll} title="Reset seluruh data FlowState?" tone="danger" confirmLabel="Reset sekarang" body="Streak, tugas, riwayat fokus, dan pengaturan akan dihapus permanen di perangkat ini. Sebaiknya ekspor cadangan terlebih dahulu."/>
     </>);
 }

@@ -1,22 +1,35 @@
 import { useState } from 'react';
-import { CalendarDays, Check, Pencil, User } from 'lucide-react';
-import { levelFromXp } from '../../data/mock/gamification';
-import { findBanner } from '../../data/mock/profile';
+import { Check, Palette, Pencil, User } from 'lucide-react';
+import { AVATARS, BACKGROUNDS, BANNERS, PROFILE_THEMES, findBanner } from '../../data/mock/profile';
 import { useProfileStore } from '../../store/useProfileStore';
-import { useProgressStore } from '../../store/useProgressStore';
 import { toast } from '../../store/useToastStore';
 import { Avatar, Badge, Button, Field, Input, Modal, Textarea } from '../common';
+import { cn } from '../../utils/cn';
 export function ProfileHeader() {
     const profile = useProfileStore((s) => s.profile);
     const update = useProfileStore((s) => s.update);
-    const xp = useProgressStore((s) => s.progress.xp);
     const [open, setOpen] = useState(false);
-    const [form, setForm] = useState({ displayName: profile.displayName, username: profile.username, bio: profile.bio });
+    const [form, setForm] = useState({
+        displayName: profile.displayName,
+        username: profile.username,
+        bio: profile.bio,
+        avatarId: profile.avatarId,
+        themeId: profile.themeId,
+        bannerId: profile.bannerId,
+        backgroundId: profile.backgroundId,
+    });
     const [error, setError] = useState('');
-    const level = levelFromXp(xp);
     const banner = findBanner(profile.bannerId);
     const edit = () => {
-        setForm({ displayName: profile.displayName, username: profile.username, bio: profile.bio });
+        setForm({
+            displayName: profile.displayName,
+            username: profile.username,
+            bio: profile.bio,
+            avatarId: profile.avatarId,
+            themeId: profile.themeId,
+            bannerId: profile.bannerId,
+            backgroundId: profile.backgroundId,
+        });
         setError('');
         setOpen(true);
     };
@@ -31,7 +44,15 @@ export function ProfileHeader() {
             setError('Username: 3–20 karakter, huruf/angka/titik/garis bawah saja.');
             return;
         }
-        update({ displayName: name, username: handle, bio: form.bio.trim() });
+        update({
+            displayName: name,
+            username: handle,
+            bio: form.bio.trim(),
+            avatarId: form.avatarId,
+            themeId: form.themeId,
+            bannerId: form.bannerId,
+            backgroundId: form.backgroundId,
+        });
         setOpen(false);
         toast.success('Profil diperbarui', `@${handle}`);
     };
@@ -44,7 +65,6 @@ export function ProfileHeader() {
             <div className="min-w-0 flex-1 pb-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-display text-xl font-semibold text-ink">{profile.displayName}</h2>
-                <Badge tone="accent">Level {level.level}</Badge>
                 <Badge tone="primary">@{profile.username}</Badge>
               </div>
               <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-ink-muted">
@@ -64,12 +84,6 @@ export function ProfileHeader() {
             month: 'long',
             year: 'numeric',
         })}
-            </span>
-            <span className="inline-flex items-center gap-1.5 tabular-nums">
-              <CalendarDays className="size-3.5"/> {level.total.toLocaleString('id-ID')} XP total
-            </span>
-            <span className="inline-flex items-center gap-1.5 tabular-nums">
-              <Check className="size-3.5"/> {level.into}/{level.needed} XP ke level berikutnya
             </span>
           </div>
         </div>
@@ -104,6 +118,55 @@ export function ProfileHeader() {
             setError('');
         }}/>
           </Field>
+
+          <div className="border-t border-line pt-4">
+            <p className="flex items-center gap-1.5 text-[13px] font-semibold text-ink">
+              <Palette className="size-4 text-primary"/> Tampilan
+            </p>
+            <p className="mt-0.5 text-[12px] text-ink-muted">
+              Pilih avatar, warna aksen, banner, dan latar aplikasi kamu.
+            </p>
+
+            <div className="mt-4 space-y-4">
+              <Field label="Avatar">
+                <div className="flex flex-wrap gap-2">
+                  {AVATARS.map((a) => (<button key={a.id} type="button" onClick={() => setForm((f) => ({ ...f, avatarId: a.id }))} aria-label={`Avatar ${a.label}`} title={a.label} className={cn('rounded-full p-0.5 transition-all', form.avatarId === a.id
+                    ? 'ring-2 ring-primary'
+                    : 'ring-1 ring-line hover:ring-line-strong')}>
+                    <Avatar avatarId={a.id} name={form.displayName} size="sm"/>
+                  </button>))}
+                </div>
+              </Field>
+
+              <Field label="Warna aksen">
+                <div className="flex flex-wrap gap-2">
+                  {PROFILE_THEMES.map((t) => (<button key={t.id} type="button" onClick={() => setForm((f) => ({ ...f, themeId: t.id }))} className={cn('inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[12px] font-medium transition-colors', form.themeId === t.id
+                    ? 'border-primary bg-primary-soft text-primary'
+                    : 'border-line bg-surface-2 text-ink-muted hover:border-line-strong hover:text-ink-soft')}>
+                    <span className="size-3.5 shrink-0 rounded-full" style={{ background: t.accent }}/>
+                    {t.label}
+                  </button>))}
+                </div>
+              </Field>
+
+              <Field label="Banner profil">
+                <div className="flex flex-wrap gap-2">
+                  {BANNERS.map((b) => (<button key={b.id} type="button" onClick={() => setForm((f) => ({ ...f, bannerId: b.id }))} aria-label={`Banner ${b.label}`} title={b.label} style={{ background: b.css }} className={cn('h-9 w-16 shrink-0 rounded-lg border transition-all', form.bannerId === b.id
+                    ? 'border-primary ring-2 ring-primary/50'
+                    : 'border-line hover:border-line-strong')}/>))}
+                </div>
+              </Field>
+
+              <Field label="Latar aplikasi">
+                <div className="flex flex-wrap gap-2">
+                  {BACKGROUNDS.map((b) => (<button key={b.id} type="button" onClick={() => setForm((f) => ({ ...f, backgroundId: b.id }))} aria-label={`Latar ${b.label}`} title={b.label} style={{ background: b.css }} className={cn('h-9 w-16 shrink-0 rounded-lg border transition-all', form.backgroundId === b.id
+                    ? 'border-primary ring-2 ring-primary/50'
+                    : 'border-line hover:border-line-strong')}/>))}
+                </div>
+              </Field>
+            </div>
+          </div>
+
           {error && <p className="text-[12.5px] text-danger">{error}</p>}
         </div>
       </Modal>

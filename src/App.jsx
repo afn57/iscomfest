@@ -7,7 +7,6 @@ const TasksPage = lazy(() => import('./pages/TasksPage').then((m) => ({ default:
 const FocusPage = lazy(() => import('./pages/FocusPage').then((m) => ({ default: m.FocusPage })));
 const CalendarPage = lazy(() => import('./pages/CalendarPage').then((m) => ({ default: m.CalendarPage })));
 const RemindersPage = lazy(() => import('./pages/RemindersPage').then((m) => ({ default: m.RemindersPage })));
-const StreakPage = lazy(() => import('./pages/StreakPage').then((m) => ({ default: m.StreakPage })));
 const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })));
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
@@ -31,9 +30,9 @@ export default function App() {
           <Route path="/focus" element={<FocusPage />}/>
           <Route path="/calendar" element={<CalendarPage />}/>
           <Route path="/reminders" element={<RemindersPage />}/>
-          <Route path="/streak" element={<StreakPage />}/>
-          <Route path="/achievements" element={<Navigate to="/streak" replace/>}/>
           <Route path="/profile" element={<ProfilePage />}/>
+          <Route path="/streak" element={<Navigate to="/profile?view=streak" replace/>}/>
+          <Route path="/achievements" element={<Navigate to="/profile?view=streak" replace/>}/>
           <Route path="/settings" element={<SettingsPage />}/>
           <Route path="*" element={<NotFoundPage />}/>
         </Route>

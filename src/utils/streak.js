@@ -1,5 +1,5 @@
 /**
- * Streak rules for FOCUSLY.
+ * Streak rules for FlowState.
  *
  * A day counts as "active" when the user completes a qualifying activity
  * (focus session with DND, full daily goal, or a completed task) — never

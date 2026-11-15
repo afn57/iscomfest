@@ -4,13 +4,12 @@ import { Badge, Select } from '../common';
 import { effectivePriority, PRIORITY_META, STATUS_META, STATUS_ORDER } from '../../utils/priority';
 import { deadlineLabel, minutesToLabel } from '../../utils/date';
 import { cn } from '../../utils/cn';
-import { CompletionDialog } from './CompletionDialog';
 import { useTaskStore } from '../../store/useTaskStore';
+import { completeTask } from '../../services/actions';
 import { toast } from '../../store/useToastStore';
 import { ConfirmDialog } from '../common';
 import { useNavigate } from 'react-router-dom';
 export function TaskItem({ task, folderName, folderColor, view, onEdit }) {
-    const [completing, setCompleting] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const setStatus = useTaskStore((s) => s.setStatus);
     const reopen = useTaskStore((s) => s.reopen);
@@ -18,13 +17,16 @@ export function TaskItem({ task, folderName, folderColor, view, onEdit }) {
     const navigate = useNavigate();
     const done = task.status === 'completed';
     const effective = effectivePriority(task);
-    const escalated = effective !== task.priority;
+    const escalated = !done && effective !== task.priority;
     const priority = PRIORITY_META[effective];
     const status = STATUS_META[task.status];
     const overdue = !done && new Date(task.deadline).getTime() < Date.now();
+    const markComplete = () => {
+        completeTask(task);
+    };
     const handleStatus = (next) => {
         if (next === 'completed') {
-            setCompleting(true);
+            markComplete();
             return;
         }
         setStatus(task.id, next);
@@ -43,7 +45,7 @@ export function TaskItem({ task, folderName, folderColor, view, onEdit }) {
         <Trash2 className="size-4"/>
       </button>
     </>);
-    const checkbox = (<button type="button" onClick={() => (done ? reopen(task.id) : setCompleting(true))} aria-label={done ? 'Buka kembali tugas' : 'Tandai selesai'} className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border transition-all', done
+    const checkbox = (<button type="button" onClick={() => (done ? reopen(task.id) : markComplete())} aria-label={done ? 'Buka kembali tugas' : 'Tandai selesai'} className={cn('mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border transition-all', done
             ? 'border-success bg-success text-white'
             : 'border-line-strong bg-surface-2 hover:border-primary hover:bg-primary-soft')}>
       {done && <Check className="size-3.5" strokeWidth={3}/>}
@@ -92,7 +94,6 @@ export function TaskItem({ task, folderName, folderColor, view, onEdit }) {
 
         <div className="mt-2">{statusSelect}</div>
 
-        <CompletionDialog task={completing ? task : null} open={completing} onClose={() => setCompleting(false)}/>
         <ConfirmDialog open={confirmDelete} onClose={() => setConfirmDelete(false)} onConfirm={handleDelete} title="Hapus tugas?" tone="danger" confirmLabel="Hapus" body={`"${task.title}" akan dihapus permanen dari daftar tugas kamu.`}/>
       </article>);
     }
@@ -136,7 +137,6 @@ export function TaskItem({ task, folderName, folderColor, view, onEdit }) {
         </div>
       </div>
 
-      <CompletionDialog task={completing ? task : null} open={completing} onClose={() => setCompleting(false)}/>
       <ConfirmDialog open={confirmDelete} onClose={() => setConfirmDelete(false)} onConfirm={handleDelete} title="Hapus tugas?" tone="danger" confirmLabel="Hapus" body={`"${task.title}" akan dihapus permanen dari daftar tugas kamu.`}/>
     </article>);
 }

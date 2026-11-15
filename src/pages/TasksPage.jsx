@@ -7,6 +7,7 @@ import { TaskItem } from '../components/tasks/TaskItem';
 import { TaskModal } from '../components/tasks/TaskModal';
 import { TaskToolbar } from '../components/tasks/TaskToolbar';
 import { DEFAULT_FILTERS, applyFilters } from '../components/tasks/filters';
+import { taskCompletionStats } from '../services/selectors';
 import { useTaskStore } from '../store/useTaskStore';
 import { usePersistedState } from '../hooks/usePersistedState';
 import { useSimulatedLoading } from '../hooks/useSimulatedLoading';
@@ -15,11 +16,12 @@ import { toast } from '../store/useToastStore';
 export function TasksPage() {
     const tasks = useTaskStore((s) => s.tasks);
     const folders = useTaskStore((s) => s.folders);
+    const statusStats = taskCompletionStats(tasks);
     const addFolder = useTaskStore((s) => s.addFolder);
     const [params, setParams] = useSearchParams();
     const [folder, setFolder] = useState('all');
     const [filter, setFilter] = useState(DEFAULT_FILTERS);
-    const [view, setView] = usePersistedState('focusly_task_view', 'list');
+    const [view, setView] = usePersistedState('flowstate_task_view', 'list');
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [folderOpen, setFolderOpen] = useState(false);
@@ -34,6 +36,18 @@ export function TasksPage() {
             setParams(params, { replace: true });
         }
     }, [params, setParams]);
+    useEffect(() => {
+        const taskId = params.get('task');
+        if (!taskId)
+            return;
+        const found = tasks.find((t) => t.id === taskId);
+        if (found) {
+            setEditing(found);
+            setModalOpen(true);
+        }
+        params.delete('task');
+        setParams(params, { replace: true });
+    }, [params, setParams, tasks]);
     const scoped = useMemo(() => (folder === 'all' ? tasks : tasks.filter((t) => t.folderId === folder)), [tasks, folder]);
     const visible = useMemo(() => applyFilters(scoped, filter), [scoped, filter]);
     const folderName = folder === 'all' ? 'Semua tugas' : (folders.find((f) => f.id === folder)?.name ?? 'Folder');
@@ -54,9 +68,16 @@ export function TasksPage() {
         toast.success('Folder dibuat', name);
     };
     return (<>
-      <PageHeader title="My Tasks" description="Kelola seluruh tugas — kelompokkan per folder, prioritaskan, dan tandai selesai dengan konfirmasi." crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'My Tasks' }]} actions={<Button icon={<Plus />} onClick={openNew}>
+      <PageHeader title="My Tasks" description="Kelola seluruh tugas — kelompokkan per folder, prioritaskan, dan tandai selesai dengan konfirmasi." crumbs={[{ label: 'FlowState', to: '/dashboard' }, { label: 'My Tasks' }]} actions={<Button icon={<Plus />} onClick={openNew}>
             Tugas baru
           </Button>}/>
+
+      {statusStats.total > 0 && (<p className="-mt-3 mb-4 text-[12.5px] text-ink-muted sm:-mt-4">
+          <span className="font-medium tabular-nums text-success">{statusStats.completed}</span> selesai ·{' '}
+          <span className="font-medium tabular-nums text-accent">{statusStats.inProgress}</span> berjalan ·{' '}
+          <span className="font-medium tabular-nums text-ink-soft">{statusStats.todo}</span> menunggu ·{' '}
+          <span className="font-medium tabular-nums text-ink-soft">{statusStats.total}</span> total
+        </p>)}
 
       <div className="grid gap-4 lg:grid-cols-[212px_minmax(0,1fr)] lg:gap-5">
         <div className="lg:sticky lg:top-20 lg:self-start">
@@ -71,7 +92,7 @@ export function TasksPage() {
               <RowSkeleton />
               <RowSkeleton />
               <RowSkeleton />
-            </div>) : visible.length === 0 ? (<EmptyState compact icon={<Inbox />} title={folderName === 'Semua tugas' ? 'Belum ada tugas' : `Folder ${folderName} kosong`} description={filter.query || filter.status !== 'all' || filter.priority !== 'all'
+            </div>) : visible.length === 0 ? (<EmptyState icon={<Inbox />} title={folderName === 'Semua tugas' ? 'Belum ada tugas' : `Folder ${folderName} kosong`} description={filter.query || filter.status !== 'all' || filter.priority !== 'all'
                 ? 'Tidak ada tugas yang cocok dengan filter saat ini. Coba longgarkan filternya.'
                 : 'Buat tugas pertama agar bisa dilacak deadline, estimasi, dan progresnya.'} action={filter.query || filter.status !== 'all' ? (<Button variant="outline" onClick={() => setFilter(DEFAULT_FILTERS)}>
                     Reset filter

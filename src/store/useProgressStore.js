@@ -7,11 +7,6 @@ import { uid } from '../utils/id';
 import { useCalendarStore } from './useCalendarStore';
 export const useProgressStore = create()(persist((set) => ({
     progress: createSeedProgress(),
-    addXp: (amount) => set((s) => ({ progress: { ...s.progress, xp: Math.max(0, s.progress.xp + amount) } })),
-    /**
-     * Marks a calendar day as "active" and recomputes streak counters.
-     * Rest days stay neutral — see utils/streak.ts.
-     */
     recordActivity: (date) => {
         const key = date ?? todayKey();
         set((s) => {
@@ -84,21 +79,31 @@ export const useProgressStore = create()(persist((set) => ({
                 at: entry.at ?? new Date().toISOString(),
                 type: entry.type,
                 message: entry.message,
-                xp: entry.xp,
             };
             return { progress: { ...s.progress, log: [item, ...s.progress.log].slice(0, 60) } };
         });
     },
     reset: () => set({ progress: createSeedProgress() }),
 }), {
-    name: 'focusly_progress',
-    version: 2,
+    name: 'flowstate_progress',
+    version: 3,
     partialize: (s) => ({ progress: s.progress }),
     migrate: (persisted) => {
         const p = persisted?.progress;
         if (!p)
             return persisted;
-        const { coins: _coins, unlocked: _unlocked, ...rest } = p;
-        return { progress: rest };
+        const { coins: _coins, unlocked: _unlocked, xp: _xp, ...rest } = p;
+        const goalProgress = Array.isArray(rest.goalProgress)
+            ? rest.goalProgress.map((goal) => {
+                const { awarded, ...entry } = goal;
+                return awarded ? { ...entry, notified: entry.notified ?? awarded } : entry;
+            })
+            : rest.goalProgress;
+        const log = Array.isArray(rest.log)
+            ? rest.log
+                .filter((entry) => entry.type !== 'level')
+                .map(({ xp: _entryXp, ...entry }) => entry)
+            : rest.log;
+        return { progress: { ...rest, goalProgress, log } };
     },
 }));

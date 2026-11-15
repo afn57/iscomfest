@@ -2,7 +2,7 @@ import { Aperture, BadgeCheck, Brain, Circle, Palette, Rocket, Sparkles, Type, }
 /**
  * Brand marks for restricted apps.
  *
- * lucide-react removed brand icons, so FOCUSLY ships its own lightweight
+ * lucide-react removed brand icons, so FlowState ships its own lightweight
  * geometric glyphs. These are decorative stand-ins, not official logos.
  */
 const BRAND_PATHS = {

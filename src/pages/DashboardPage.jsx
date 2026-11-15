@@ -1,4 +1,5 @@
 import { GreetingHeader } from '../components/dashboard/GreetingHeader';
+import { DeadlineAlert } from '../components/dashboard/DeadlineAlert';
 import { ProductivityChart, TodayProgress } from '../components/dashboard/Charts';
 import { TodayTaskList, UpcomingDeadlines } from '../components/dashboard/TaskPanels';
 import { ActivityFeed, DailyGoalsWidget } from '../components/dashboard/Panels';
@@ -36,6 +37,7 @@ export function DashboardPage() {
     if (loading)
         return <DashboardSkeleton />;
     return (<div className="space-y-4 sm:space-y-5">
+      <DeadlineAlert />
       <GreetingHeader />
 
       <div className="grid gap-4 sm:gap-5 lg:grid-cols-3">
@@ -67,7 +69,7 @@ export function DashboardPage() {
             localStorage.
           </li>
           <li>
-            • FOCUSLY saat ini berjalan sebagai aplikasi frontend. Integrasi backend dan
+            • FlowState saat ini berjalan sebagai aplikasi frontend. Integrasi backend dan
             browser extension untuk Focus Lock disiapkan pada tahap berikutnya.
           </li>
         </ul>

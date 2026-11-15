@@ -101,7 +101,7 @@ export function FocusHistory() {
       <p className="flex items-start gap-2 text-[12px] leading-relaxed text-ink-muted">
         <History className="mt-0.5 size-3.5 shrink-0"/>
         Catatan: hanya sesi yang diselesaikan penuh dengan DND aktif yang menambah streak.
-        Sesi yang diakhiri lebih awal tetap memberi XP kecil.
+        Sesi yang diakhiri lebih awal tetap tercatat di riwayat.
       </p>
     </div>);
 }

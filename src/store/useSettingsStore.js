@@ -37,7 +37,7 @@ export const useSettingsStore = create()(persist((set) => ({
     })),
     reset: () => set({ settings: DEFAULT_SETTINGS }),
 }), {
-    name: 'focusly_settings',
+    name: 'flowstate_settings',
     version: 2,
     migrate: (persisted) => {
         const s = persisted?.settings;

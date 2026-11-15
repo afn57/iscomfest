@@ -1,12 +1,27 @@
 import { Flame, Info, ShieldCheck } from 'lucide-react';
 import { useProgressStore } from '../../store/useProgressStore';
+import { useCalendarStore } from '../../store/useCalendarStore';
+import { useSettingsStore } from '../../store/useSettingsStore';
 import { streakWeek } from '../../services/selectors';
+import { todayKey } from '../../utils/date';
 import { cn } from '../../utils/cn';
 import { Panel } from '../common';
 export function StreakPanel() {
     const progress = useProgressStore((s) => s.progress);
+    const restDays = useCalendarStore((s) => s.restDays);
+    const protectStreak = useSettingsStore((s) => s.settings.restDay.protectStreak);
     const week = streakWeek();
-    return (<Panel title="Streak aktif" description="Streak bertambah hanya lewat aktivitas selesai — bukan sekadar membuka aplikasi.">
+    const today = todayKey();
+    const secured = progress.activityDates.includes(today);
+    const isRest = restDays.some((r) => r.date === today);
+    return (<Panel title="Streak aktif" description="Streak bertambah hanya lewat aktivitas selesai — bukan sekadar membuka aplikasi." action={<span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-medium', secured
+            ? 'bg-success-soft text-success'
+            : isRest
+                ? 'bg-accent-soft text-accent'
+                : 'bg-warning-soft text-warning')}>
+            <ShieldCheck className="size-3.5"/>
+            {secured ? 'Terjaga hari ini' : isRest ? 'Rest Day — aman' : 'Belum terjaga'}
+          </span>}>
       <div className="flex items-end gap-5">
         <div>
           <div className="flex items-center gap-2">
@@ -56,12 +71,12 @@ export function StreakPanel() {
         </p>
       </div>
 
-      <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-success/30 bg-success-soft px-3.5 py-3">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success"/>
-        <p className="text-[12.5px] leading-relaxed text-ink-muted">
-          Proteksi streak aktif — hari istirahat terjadwal akan menjembatani jarak antar hari aktif.
-        </p>
-      </div>
+      {protectStreak && (<div className="mt-3 flex items-start gap-2.5 rounded-xl border border-success/30 bg-success-soft px-3.5 py-3">
+          <ShieldCheck className="mt-0.5 size-4 text-success"/>
+          <p className="text-[12.5px] leading-relaxed text-ink-muted">
+            Proteksi streak aktif — hari istirahat terjadwal akan menjembatani jarak antar hari aktif.
+          </p>
+        </div>)}
     </Panel>);
 }
 function Legend({ color, label, hint }) {

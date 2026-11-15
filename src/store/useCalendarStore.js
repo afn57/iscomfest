@@ -28,4 +28,4 @@ export const useCalendarStore = create()(persist((set, get) => ({
     getRestDates: () => get().restDays.map((r) => r.date),
     isRestDay: (date) => get().restDays.some((r) => r.date === date),
     reset: () => set({ events: createSeedEvents(), restDays: createSeedRestDays() }),
-}), { name: 'focusly_calendar', version: 1 }));
+}), { name: 'flowstate_calendar', version: 1 }));

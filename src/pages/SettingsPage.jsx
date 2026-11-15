@@ -4,7 +4,7 @@ import { AppearanceSettings, FocusSettings, PrivacySettings } from '../component
 import { DataSettings } from '../components/settings/DataSettings';
 export function SettingsPage() {
     return (<>
-      <PageHeader title="Settings" description="Tampilan, preferensi fokus, privasi, dan pengelolaan data lokal." crumbs={[{ label: 'FOCUSLY', to: '/dashboard' }, { label: 'Settings' }]}/>
+      <PageHeader title="Settings" description="Tampilan, preferensi fokus, privasi, dan pengelolaan data lokal." crumbs={[{ label: 'FlowState', to: '/dashboard' }, { label: 'Settings' }]}/>
 
       <div className="space-y-4 sm:space-y-5">
         <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
@@ -22,7 +22,7 @@ export function SettingsPage() {
             <Info className="size-4"/>
           </span>
           <div>
-            <p className="text-[13.5px] font-medium text-ink">FOCUSLY v1.0 — aplikasi demo frontend</p>
+            <p className="text-[13.5px] font-medium text-ink">FlowState v1.0 — aplikasi demo frontend</p>
             <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-muted">
               React 19 · Vite · Tailwind CSS · Zustand. Seluruh data dan notifikasi
               disimulasikan di dalam browser tanpa backend.

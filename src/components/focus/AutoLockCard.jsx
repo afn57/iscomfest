@@ -21,7 +21,7 @@ export function AutoLockCard() {
         return (<Panel title="Automatic Focus Lock">
         <div className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface-2 px-3.5 py-3">
           <p className="text-[12.5px] leading-relaxed text-ink-muted">
-            Rekomendasi penguncian otomatis sedang nonaktif. Nyalakan agar FOCUSLY mengingatkan
+            Rekomendasi penguncian otomatis sedang nonaktif. Nyalakan agar FlowState mengingatkan
             saat deadline mendekat.
           </p>
           <Button size="sm" variant="secondary" onClick={() => updateSection('focus', { autoLockEnabled: true })}>

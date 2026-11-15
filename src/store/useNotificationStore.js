@@ -15,10 +15,10 @@ function seed() {
     });
     return [
         mk(1, 'deadline', 'Deadline hari ini', '"Laporan Praktikum Fisika" jatuh tempo malam pukul 22.00.', false, '/tasks'),
-        mk(3, 'focus', 'Sesi fokus 50 menit selesai', 'Kerja bagus — +25 XP masuk.', true, '/focus'),
+        mk(3, 'focus', 'Sesi fokus 50 menit selesai', 'Riwayat fokus kamu sudah diperbarui.', true, '/focus'),
         mk(6, 'streak', 'Streak 12 hari', 'Aktivitas hari ini tercatat. Pertahankan besok.', true),
         mk(20, 'overdue', 'Tugas terlambat', '"Esai: Etika Penggunaan AI di Kampus" sudah melewati deadline.', false, '/tasks'),
-        mk(30, 'system', 'Selamat datang di FOCUSLY', 'Mulai dengan satu sesi fokus hari ini.', true),
+        mk(30, 'system', 'Selamat datang di FlowState', 'Mulai dengan satu sesi fokus hari ini.', true),
     ];
 }
 export const useNotificationStore = create()(persist((set, get) => ({
@@ -50,13 +50,13 @@ export const useNotificationStore = create()(persist((set, get) => ({
     dismiss: (id) => set((s) => ({ notifications: s.notifications.filter((n) => n.id !== id) })),
     clear: () => set({ notifications: [] }),
 }), {
-    name: 'focusly_notifications',
-    version: 2,
+    name: 'flowstate_notifications',
+    version: 3,
     migrate: (persisted) => {
         if (!Array.isArray(persisted?.notifications))
             return persisted;
         return {
-            notifications: persisted.notifications.filter((n) => n.kind !== 'reward' && n.kind !== 'achievement'),
+            notifications: persisted.notifications.filter((n) => n.kind !== 'reward' && n.kind !== 'achievement' && !String(n.title).toLowerCase().startsWith('level ') && !String(n.body).toLowerCase().includes('xp')),
         };
     },
 }));
