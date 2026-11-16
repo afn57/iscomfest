@@ -36,7 +36,7 @@ export function MonthView({ base, entries, restDates, selected, onSelect }) {
       </div>
 
       <div className="grid grid-cols-7 border-b border-line bg-surface-2">
-        {WEEKDAYS.map((w) => (<div key={w} className="px-2 py-2 text-center text-[11px] font-medium text-ink-muted">
+        {WEEKDAYS.map((w) => (<div key={w} className="px-0.5 py-2 text-center text-[10px] font-medium text-ink-muted sm:px-2 sm:text-[11px]">
             {w}
           </div>))}
       </div>
@@ -49,9 +49,9 @@ export function MonthView({ base, entries, restDates, selected, onSelect }) {
             const isSelected = key === selected;
             const isRest = restSet.has(key);
             const dayEntries = byDay.get(key) ?? [];
-            return (<button key={key} type="button" onClick={() => onSelect(key)} className={cn('group min-h-[92px] border-b border-r border-line px-2 py-1.5 text-left transition-colors last:border-r-0 hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50', !inMonth && 'bg-surface-2/40', isSelected && 'ring-2 ring-inset ring-primary')}>
+            return (<button key={key} type="button" onClick={() => onSelect(key)} className={cn('group min-h-[68px] border-b border-r border-line px-1 py-1 text-left transition-colors last:border-r-0 hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 sm:min-h-[92px] sm:px-2 sm:py-1.5', !inMonth && 'bg-surface-2/40', isSelected && 'ring-2 ring-inset ring-primary')}>
               <div className="flex items-center justify-between">
-                <span className={cn('inline-flex size-6 items-center justify-center rounded-full text-[12px] tabular-nums', isToday
+                <span className={cn('inline-flex size-5 items-center justify-center rounded-full text-[11px] tabular-nums sm:size-6 sm:text-[12px]', isToday
                     ? 'bg-primary font-semibold text-white'
                     : inMonth
                         ? 'text-ink-soft'
@@ -59,13 +59,13 @@ export function MonthView({ base, entries, restDates, selected, onSelect }) {
                   {d.getDate()}
                 </span>
                 {isRest && (<Tooltip content="Rest Day">
-                    <span className="flex size-5 items-center justify-center rounded-md bg-accent-soft text-accent">
+                    <span className="flex size-4 items-center justify-center rounded-md bg-accent-soft text-accent sm:size-5">
                       <Sun className="size-3"/>
                     </span>
                   </Tooltip>)}
               </div>
 
-              <div className="mt-1 space-y-1">
+              <div className="mt-1 hidden space-y-1 sm:block">
                 {dayEntries.slice(0, 2).map((e) => (<div key={e.id} className={cn('truncate rounded px-1.5 py-0.5 text-[10.5px] font-medium leading-tight', EVENT_META[e.type].chip)} title={e.title}>
                     {e.startMinute != null && (<span className="opacity-70">
                         {String(Math.floor(e.startMinute / 60)).padStart(2, '0')}:
@@ -75,6 +75,10 @@ export function MonthView({ base, entries, restDates, selected, onSelect }) {
                   </div>))}
                 {dayEntries.length > 2 && (<div className="px-1.5 text-[10.5px] text-ink-muted">+{dayEntries.length - 2} lagi</div>)}
               </div>
+              {dayEntries.length > 0 && (<div className="mt-1 flex gap-0.5 sm:hidden" aria-label={`${dayEntries.length} jadwal`}>
+                  {dayEntries.slice(0, 3).map((e) => (<span key={e.id} className={cn('size-1.5 rounded-full', EVENT_META[e.type].dot)} />))}
+                  {dayEntries.length > 3 && <span className="text-[9px] leading-none text-ink-muted">+{dayEntries.length - 3}</span>}
+                </div>)}
             </button>);
         })}
       </div>

@@ -36,17 +36,18 @@ export function WeekView({ base, entries, restDates, selected, onSelect }) {
         <h3 className="font-display text-[15px] font-semibold text-ink">
           {from.getDate()}–{to.getDate()} {formatMonthYear(to)}
         </h3>
-        <p className="text-[12px] text-ink-muted">Minggu aktif</p>
+        <p className="text-[11px] text-ink-muted sm:text-[12px]">Pilih hari untuk melihat agendanya</p>
       </div>
 
-      <div className="grid grid-cols-7 divide-x divide-line">
+      <div className="overflow-x-auto touch-pan-x">
+      <div className="grid min-w-0 grid-cols-2 gap-2 p-2 sm:grid-cols-3 sm:gap-2.5 sm:p-3 lg:min-w-[700px] lg:grid-cols-7">
         {days.map((d) => {
             const key = dayKey(d);
             const isToday = key === today;
             const isSelected = key === selected;
             const isRest = restSet.has(key);
             const list = byDay.get(key) ?? [];
-            return (<button key={key} type="button" onClick={() => onSelect(key)} className={cn('min-h-[15rem] px-2.5 py-3 text-left transition-colors hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50', isSelected && 'bg-surface-2 ring-2 ring-inset ring-primary')}>
+            return (<button key={key} type="button" onClick={() => onSelect(key)} className={cn('min-h-[12rem] rounded-xl border border-line bg-surface-2/40 px-2 py-2 text-left transition-colors hover:border-primary/50 hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 sm:min-h-[15rem] sm:px-2.5 sm:py-3', isSelected && 'border-primary/60 bg-surface-2 ring-2 ring-inset ring-primary')}>
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-[10.5px] uppercase tracking-wider text-ink-muted">
@@ -72,6 +73,7 @@ export function WeekView({ base, entries, restDates, selected, onSelect }) {
               </div>
             </button>);
         })}
+      </div>
       </div>
     </div>);
 }

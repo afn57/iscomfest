@@ -22,7 +22,7 @@ export function StreakPanel() {
             <ShieldCheck className="size-3.5"/>
             {secured ? 'Terjaga hari ini' : isRest ? 'Rest Day — aman' : 'Belum terjaga'}
           </span>}>
-      <div className="flex items-end gap-5">
+      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:gap-5">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning">
@@ -38,7 +38,7 @@ export function StreakPanel() {
           </p>
         </div>
 
-        <div className="flex gap-1.5 pb-1">
+        <div className="flex w-full justify-between gap-1.5 pb-1 sm:w-auto sm:justify-start">
           {week.map((d) => (<div key={d.key} className="flex flex-col items-center gap-1.5">
               <span title={d.rest
                 ? 'Rest Day — streak dipertahankan'

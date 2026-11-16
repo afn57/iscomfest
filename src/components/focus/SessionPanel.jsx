@@ -204,7 +204,7 @@ export function SessionPanel() {
         </div>
       </div>
 
-      <ConfirmDialog open={ending} onClose={() => setEnding(false)} onConfirm={confirmEnd} title="Akhiri sesi fokus?" tone="danger" confirmLabel="Akhiri sesi" body={<>
+      <ConfirmDialog open={ending} onClose={() => setEnding(false)} onConfirm={confirmEnd} title="Akhiri sesi fokus?" tone="danger" confirmLabel="Akhiri sesi" className="self-center" body={<>
             Sesi yang diakhiri sebelum waktu habis tetap tercatat, tetapi kamu hanya mendapat
             poin sebagian. Streak hari ini butuh sesi yang{' '}
             <strong className="text-ink">selesai penuh</strong> dengan DND aktif.

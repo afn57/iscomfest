@@ -60,18 +60,21 @@ export function ProfileHeader() {
       <div className="overflow-hidden rounded-card border border-line bg-surface shadow-card">
         <div className="h-28 sm:h-36" style={{ backgroundImage: banner.css }} aria-hidden/>
         <div className="px-4 pb-4 sm:px-6">
-          <div className="-mt-10 flex flex-wrap items-end gap-4">
+          <div className="-mt-10 grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 sm:flex sm:flex-wrap sm:items-end">
             <Avatar avatarId={profile.avatarId} name={profile.displayName} size="xl" ring/>
-            <div className="min-w-0 flex-1 pb-1">
+            <div className="min-w-0 flex-1 self-end pb-5 sm:self-auto sm:pb-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-display text-xl font-semibold text-ink">{profile.displayName}</h2>
-                <Badge tone="primary">@{profile.username}</Badge>
+                <h2 className="max-w-full break-words font-display text-xl font-semibold text-ink">{profile.displayName}</h2>
+                <Badge tone="primary"><span className="break-all">@{profile.username}</span></Badge>
               </div>
-              <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-ink-muted">
+              <p className="mt-1 hidden max-w-2xl break-words text-[13.5px] leading-relaxed text-ink-muted sm:block">
                 {profile.bio || 'Belum ada bio. Tambahkan supaya temanmu mengenalmu.'}
               </p>
             </div>
-            <Button variant="outline" icon={<Pencil />} onClick={edit}>
+            <p className="col-span-2 min-w-0 break-words text-[13.5px] leading-relaxed text-ink-muted sm:hidden">
+              {profile.bio || 'Belum ada bio. Tambahkan supaya temanmu mengenalmu.'}
+            </p>
+            <Button variant="outline" icon={<Pencil />} onClick={edit} className="col-span-2 justify-self-end sm:col-span-1 sm:ml-auto">
               Edit profil
             </Button>
           </div>

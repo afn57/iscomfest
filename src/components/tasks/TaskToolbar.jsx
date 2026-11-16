@@ -12,7 +12,7 @@ export function TaskToolbar({ filter, onChange, onReset, view, onView, resultCou
     return (<div className="rounded-card border border-line bg-surface p-3 shadow-card">
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="min-w-[200px] flex-1">
+          <div className="min-w-0 flex-1">
             <Input icon={<Search className="size-4"/>} placeholder="Cari judul, deskripsi, atau kategori…" value={filter.query} onChange={(e) => onChange({ query: e.target.value })} className="h-9"/>
           </div>
 

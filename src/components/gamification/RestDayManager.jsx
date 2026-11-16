@@ -35,7 +35,7 @@ export function RestDayManager() {
         d.setDate(d.getDate() + 1);
         scheduleRestDay(dayKey(d), 'Recovery setelah streak panjang.');
     };
-    return (<div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+    return (<div className="grid min-w-0 gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
       <Panel title="Rest Day" description="Istirahat terjadwal yang menjaga streak tetap hidup." action={<span className="text-[12.5px] text-ink-muted">
             {upcoming.length} terjadwal · {past.length} lampau
           </span>}>

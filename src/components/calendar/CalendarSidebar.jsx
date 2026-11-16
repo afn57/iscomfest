@@ -31,7 +31,7 @@ export function CalendarSidebar({ selected, entries, restDates, onCreate, onOpen
             setReason('');
         }
     };
-    return (<div className="space-y-4 sm:space-y-5">
+    return (<div className="min-w-0 space-y-4 sm:space-y-5">
       <Panel title={formatLong(selected)} description={selected === todayKey() ? 'Hari ini' : isPast ? 'Hari terlewati' : 'Hari terpilih'} action={<Button size="sm" variant="outline" icon={<Plus />} onClick={() => onCreate(selected)}>
             Tambah
           </Button>}>

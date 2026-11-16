@@ -53,7 +53,7 @@ export function SearchDialog({ open, onClose }) {
         navigate(r.to);
         onClose();
     };
-    return (<Modal open={open} onClose={onClose} size="lg" className="sm:top-[12vh] sm:self-start">
+    return (<Modal open={open} onClose={onClose} size="lg" className="self-start sm:top-[12vh] sm:self-start">
       <div className="-mx-5 -my-4">
         <div className="flex items-center gap-2.5 border-b border-line px-4">
           <Search className="size-4 shrink-0 text-ink-muted"/>

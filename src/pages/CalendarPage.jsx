@@ -106,8 +106,8 @@ export function CalendarPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
-        <div className="space-y-4 sm:space-y-5">
+      <div className="grid min-w-0 gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-4 sm:space-y-5">
           {view === 'month' && (<MonthView base={cursor} entries={entries} restDates={restDates} selected={selected} onSelect={selectDate}/>)}
           {view === 'week' && (<WeekView base={cursor} entries={entries} restDates={restDates} selected={selected} onSelect={selectDate}/>)}
           {view === 'day' && (<DayView entries={entries} restDates={restDates} selected={selected} onCreate={openCreate} onOpenEvent={openEvent}/>)}

@@ -60,8 +60,8 @@ export function Topbar({ onOpenMobileNav }) {
         return list;
     }, [location.pathname]);
     return (<>
-      <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-line bg-surface/85 px-3 backdrop-blur-md sm:px-5">
-        <button type="button" onClick={onOpenMobileNav} aria-label="Buka menu navigasi" className="rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink lg:hidden">
+      <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-1 border-b border-line bg-surface/85 px-3 backdrop-blur-md sm:gap-2 sm:px-5">
+        <button type="button" onClick={onOpenMobileNav} aria-label="Buka menu navigasi" className="rounded-lg p-1.5 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink sm:p-2 lg:hidden">
           <Menu className="size-5"/>
         </button>
 
@@ -74,9 +74,9 @@ export function Topbar({ onOpenMobileNav }) {
                 </Link>)}
             </span>))}
         </nav>
-        <span className="truncate text-sm font-medium text-ink sm:hidden">{title}</span>
+        <span className="shrink-0 whitespace-nowrap text-[13px] font-medium text-ink sm:hidden">{title}</span>
 
-        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           {/* Search */}
           <button type="button" onClick={() => setSearchOpen(true)} className="hidden h-9 w-64 items-center gap-2 overflow-hidden rounded-xl border border-line bg-surface-2 px-3 text-left text-[13px] text-ink-muted transition-colors hover:border-line-strong md:flex">
             <Search className="size-4 shrink-0"/>
@@ -85,13 +85,13 @@ export function Topbar({ onOpenMobileNav }) {
               Ctrl K
             </kbd>
           </button>
-          <button type="button" onClick={() => setSearchOpen(true)} aria-label="Cari" className="rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink md:hidden">
+          <button type="button" onClick={() => setSearchOpen(true)} aria-label="Cari" className="rounded-lg p-1.5 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink sm:p-2 md:hidden">
             <Search className="size-5"/>
           </button>
 
           {/* Theme */}
           <Tooltip content={theme === 'dark' ? 'Mode terang' : 'Mode gelap'}>
-            <button type="button" onClick={toggleTheme} aria-label="Ganti tema" className="rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink">
+            <button type="button" onClick={toggleTheme} aria-label="Ganti tema" className="rounded-lg p-1.5 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink sm:p-2">
               {theme === 'dark' ? <Sun className="size-5"/> : <Moon className="size-5"/>}
             </button>
           </Tooltip>
@@ -99,7 +99,7 @@ export function Topbar({ onOpenMobileNav }) {
           {/* Notifications */}
           <div className="relative">
             <Tooltip content="Notifikasi">
-            <button type="button" onClick={() => setNotifOpen((v) => !v)} aria-label={`Notifikasi${total ? `, ${total} perlu perhatian` : ''}`} className="relative rounded-lg p-2 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink">
+            <button type="button" onClick={() => setNotifOpen((v) => !v)} aria-label={`Notifikasi${total ? `, ${total} perlu perhatian` : ''}`} className="relative rounded-lg p-1.5 text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink sm:p-2">
               <Bell className="size-5"/>
               {total > 0 && (<span className="absolute right-1 top-1 flex min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold leading-4 text-white">
                   {total > 9 ? '9+' : total}
@@ -110,7 +110,7 @@ export function Topbar({ onOpenMobileNav }) {
 
           {/* Avatar menu */}
           <div className="relative" ref={menuRef}>
-            <button type="button" onClick={() => setMenuOpen((v) => !v)} className="flex items-center gap-1 rounded-xl p-1 pr-1.5 transition-colors hover:bg-surface-2" aria-label="Menu profil">
+            <button type="button" onClick={() => setMenuOpen((v) => !v)} className="flex items-center gap-1 rounded-xl p-0.5 pr-1 transition-colors hover:bg-surface-2 sm:p-1 sm:pr-1.5" aria-label="Menu profil">
               <Avatar avatarId={profile.avatarId} name={profile.displayName} size="sm"/>
               <ChevronDown className="hidden size-3.5 text-ink-muted sm:block"/>
             </button>
